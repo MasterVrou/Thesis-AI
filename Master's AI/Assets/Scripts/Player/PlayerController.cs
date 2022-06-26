@@ -16,15 +16,19 @@ public class PlayerController : MonoBehaviour
     private bool isDodging;
     private bool isGrounded;
 
-    private bool canMove;
+    private bool canWalk;
     private bool canFlip;
 
     //1 is right, -1 is left
     private float movementDirection;
-
+    private float dodgeStartTime;
+    private float dodgeDuration;
+    
     public float movementSpeed;
     public float jumpSpeed;
     public float groundCheckRadius;
+
+    public float dodgeSpeed;
 
     private void Start()
     {
@@ -36,13 +40,15 @@ public class PlayerController : MonoBehaviour
         isGrounded = false;
         isDodging = false;
 
-        canMove = true;
+        canWalk = true;
         canFlip = true;
 
         movementSpeed = 7;
         jumpSpeed = 12;
         groundCheckRadius = 0.4f;
         movementDirection = 0;
+        dodgeDuration = 0.3f;
+        dodgeSpeed = 15;
     }
 
     private void Update()
@@ -56,26 +62,76 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Walk();
+        CheckDodge();
     }
 
     private void UpdateAnimations()
     {
         anim.SetBool("isWalking", isWalking);
         anim.SetBool("isGrounded", isGrounded);
+        anim.SetBool("isDodging", isDodging);
     }
 
     private void CheckInput()
     {
         movementDirection = Input.GetAxisRaw("Horizontal");
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Dodge();
+        }
+    }
+
+    private void Jump()
+    {
+        if (isGrounded && rb.velocity.y <= 0)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+        }
+    }
+
+    private void Dodge()
+    {
+        if (isGrounded)
+        {
+            isDodging = true;
+            dodgeStartTime = Time.time;
+        }
+    }
+
+    private void CheckDodge()
+    {
+        if (Time.time >= dodgeStartTime + dodgeDuration && isDodging)
+        {
+            isDodging = false;
+            rb.velocity = new Vector2(0.0f, rb.velocity.y);
+        }
+        else if (isDodging)
+        {
+            if (isFacingRight)
+            {
+                rb.velocity = new Vector2(dodgeSpeed, rb.velocity.y);
+            }
+            else
+            {
+                rb.velocity = new Vector2(-dodgeSpeed, rb.velocity.y);
+            }
+            
+        }
     }
 
     private void Walk()
     {
-        if (canMove && !isDodging)
+        if (canWalk && !isDodging)
         {
             rb.velocity = new Vector2(movementSpeed * movementDirection, rb.velocity.y);
         }
-        else if (!isDodging)
+        else if (!isDodging && isGrounded)
         {
             rb.velocity = new Vector2(0, 0);
         }
@@ -93,7 +149,7 @@ public class PlayerController : MonoBehaviour
     
     private void CheckSprites()
     {
-        if((movementDirection == 1 && !isFacingRight) || (movementDirection == -1 && isFacingRight) && canFlip)
+        if(((movementDirection == 1 && !isFacingRight) || (movementDirection == -1 && isFacingRight)) && canFlip)
         {
             isFacingRight = !isFacingRight;
             transform.Rotate(0.0f, 180.0f, 0.0f);
@@ -107,14 +163,19 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(groundCheck.position, groundCheckRadius);
+    }
+
     public void setCanFlip(bool b)
     {
         canFlip = b;
     }
 
-    public void setCanMove(bool b)
+    public void setCanWalk(bool b)
     {
-        canMove = b;
+        canWalk = b;
     }
 
 }
