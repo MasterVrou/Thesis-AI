@@ -45,7 +45,17 @@ public class PlayerCombat : MonoBehaviour
         UpdateAnimations();
         CheckCombatInput();
         CheckAttacks();
-        //CheckShield();
+        CheckShield();
+    }
+
+    private void CheckShield()
+    {
+        
+    }
+
+    void NoShield()
+    {
+        isShielded = false;
     }
 
     private void UpdateAnimations()
@@ -53,6 +63,7 @@ public class PlayerCombat : MonoBehaviour
         anim.SetBool("isLightAttacking", isLightAttacking);
         anim.SetBool("isHeavyAttacking", isHeavyAttacking);
         anim.SetBool("isAttacking", isAttacking);
+        anim.SetBool("isShielded", isShielded);
     }
 
     private void CheckCombatInput()
@@ -72,6 +83,14 @@ public class PlayerCombat : MonoBehaviour
             lastInputTime = Time.time;
         }
 
+
+        if (Input.GetKeyDown(KeyCode.E) && !isShielded)
+        {
+
+            isShielded = true;
+            //call NoShield 3 seconds later
+            Invoke("NoShield", 0.3f);
+        }
     }
 
     private void CheckAttacks()
