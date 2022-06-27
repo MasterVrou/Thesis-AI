@@ -168,6 +168,14 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawSphere(groundCheck.position, groundCheckRadius);
     }
 
+    //Getters
+
+    public bool getGrounded()
+    {
+        return isGrounded;
+    }
+
+    //Setters
     public void setCanFlip(bool b)
     {
         canFlip = b;

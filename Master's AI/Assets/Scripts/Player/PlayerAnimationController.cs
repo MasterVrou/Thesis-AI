@@ -4,29 +4,95 @@ using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
 {
-    private PlayerController PC;
+    [SerializeField]
+    private Transform lightAttackHitBoxPos;
+    [SerializeField]
+    private Transform heavyAttackHitBoxPos;
+
+    [SerializeField]
+    private LayerMask whatIsDamageable;
+
+    private PlayerController pController;
+    private PlayerCombat pCombat;
+
+    private AttackDetails attackDetails;
+
+    private float lightAttackDamage;
+    private float heavyAttackDamage;
+    public float lightAttackRadius = 0.1f;
+    public float heavyAttackRadius = 0.1f;
 
     private void Start()
     {
-        PC = GetComponent<PlayerController>();
-    }
+        pController = GetComponent<PlayerController>();
+        pCombat = GetComponent<PlayerCombat>();
+
+        lightAttackDamage = 10;
+        heavyAttackDamage = 15;
+}
 
     private void WalkingEnabled()
     {
-        PC.setCanWalk(true);
+        pController.setCanWalk(true);
     }
 
     private void WalkingDisabled()
     {
-        PC.setCanWalk(false);
+        pController.setCanWalk(false);
     }
 
     private void FlipEnabled()
     {
-        PC.setCanFlip(true);
+        pController.setCanFlip(true);
     }
     private void FlipDisabled()
     {
-        PC.setCanFlip(false);
+        pController.setCanFlip(false);
+    }
+
+    private void CheckLightAttackHitBox()
+    {
+        Collider2D[] detectedObjects = Physics2D.OverlapCircleAll(lightAttackHitBoxPos.position, lightAttackRadius, whatIsDamageable);
+
+        attackDetails.damageAmount = lightAttackDamage;
+        attackDetails.position = transform.position;
+
+        foreach (Collider2D collider in detectedObjects)
+        {
+            lightAttackDamage = 10f;
+            collider.transform.parent.SendMessage("Damage", attackDetails);
+        }
+    }
+
+    private void CheckHeavyAttackHitBox()
+    {
+        Collider2D[] detectedObjects = Physics2D.OverlapCircleAll(heavyAttackHitBoxPos.position, heavyAttackRadius, whatIsDamageable);
+
+        attackDetails.damageAmount = heavyAttackDamage;
+        attackDetails.position = transform.position;
+
+        foreach (Collider2D collider in detectedObjects)
+        {
+            heavyAttackDamage = 15f;
+            collider.transform.parent.SendMessage("Damage", attackDetails);
+        }
+    }
+
+    private void FinishLightAttack()
+    {
+        pCombat.SetIsAttacking(false);
+        pCombat.SetIsLightAttacking(false);
+    }
+
+    private void FinishHeavyAttack()
+    {
+        pCombat.SetIsAttacking(false);
+        pCombat.SetIsHeavyAttacking(false);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(lightAttackHitBoxPos.position, lightAttackRadius);
+        Gizmos.DrawSphere(heavyAttackHitBoxPos.position, heavyAttackRadius);
     }
 }
