@@ -2,25 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossController : MonoBehaviour
+public class BossController : ParentController
 {
-    private Rigidbody2D rb;
-    private Animator anim;
-
-    public Transform groundCheck;
-
-    public LayerMask whatIsGround;
+    [SerializeField]
+    private Transform playerPos;
 
     private bool isDying;
-    private bool isGrounded;
 
     private float maxHealth;
     public float currentHealth;
-    public float groundCheckRadius;
 
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
+
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
 
@@ -31,10 +27,13 @@ public class BossController : MonoBehaviour
         groundCheckRadius = 0.4f;
     }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
+
         CheckHealth();
         CheckSurroundings();
+        CheckDirection();
     }
 
     private void CheckHealth()
@@ -50,13 +49,13 @@ public class BossController : MonoBehaviour
         anim.SetTrigger("Death");
     }
 
-    private void CheckSurroundings()
+    protected override void CheckSurroundings()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, whatIsGround);
 
     }
 
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmos()
     {
         Gizmos.DrawSphere(groundCheck.position, groundCheckRadius);
     }
@@ -74,5 +73,15 @@ public class BossController : MonoBehaviour
         
     }
 
-    
+    private void CheckDirection()
+    {
+        if (playerPos.position.x < this.transform.position.x)
+        {
+            movementDirection = -1;
+        }
+        else if(playerPos.position.x > this.transform.position.x)
+        {
+            movementDirection = 1;
+        }
+    }
 }

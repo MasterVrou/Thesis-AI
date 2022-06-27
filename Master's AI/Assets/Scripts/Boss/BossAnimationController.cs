@@ -10,6 +10,8 @@ public class BossAnimationController : MonoBehaviour
     [SerializeField]
     private LayerMask whatIsPlayer;
 
+    
+
     private BossController bController;
 
     private AttackDetails attackDetails;
@@ -45,5 +47,6 @@ public class BossAnimationController : MonoBehaviour
             collider.transform.SendMessage("Damage", attackDetails);
         }
     }
+
 
 }

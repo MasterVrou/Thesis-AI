@@ -62,6 +62,7 @@
     <Compile Include="Assets\Dark Knight - Pixel Art\Demo\Sensor_DarkKnight.cs" />
     <Compile Include="Assets\Scripts\Boss\BossController.cs" />
     <Compile Include="Assets\Scripts\Boss\BossAnimationController.cs" />
+    <Compile Include="Assets\Scripts\ParentController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Dark Knight - Pixel Art\ColorSwap\Sprites-ColorSwap.shader" />
