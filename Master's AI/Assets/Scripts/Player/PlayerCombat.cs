@@ -45,12 +45,6 @@ public class PlayerCombat : MonoBehaviour
         UpdateAnimations();
         CheckCombatInput();
         CheckAttacks();
-        CheckShield();
-    }
-
-    private void CheckShield()
-    {
-        
     }
 
     void NoShield()
@@ -98,7 +92,7 @@ public class PlayerCombat : MonoBehaviour
         if (gotInput)
         {
 
-            if (gotLightInput)
+            if (gotLightInput && !isAttacking)
             {
                 if (!isLightAttacking)
                 {
@@ -109,7 +103,7 @@ public class PlayerCombat : MonoBehaviour
                 }
             }
 
-            if (gotHeavyInput)
+            if (gotHeavyInput && !isAttacking)
             {
                 if (!isHeavyAttacking)
                 {
@@ -127,6 +121,12 @@ public class PlayerCombat : MonoBehaviour
             gotInput = false;
         }
 
+    }
+
+    //Getters
+    public bool GetIsShielded()
+    {
+        return isShielded;
     }
 
     //Setters

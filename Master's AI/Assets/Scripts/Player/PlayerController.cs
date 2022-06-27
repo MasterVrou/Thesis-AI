@@ -175,6 +175,10 @@ public class PlayerController : MonoBehaviour
         return isGrounded;
     }
 
+    public bool GetIsFacingRight()
+    {
+        return isFacingRight;
+    }
     //Setters
     public void setCanFlip(bool b)
     {

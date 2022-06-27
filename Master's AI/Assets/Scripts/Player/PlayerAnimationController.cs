@@ -19,6 +19,8 @@ public class PlayerAnimationController : MonoBehaviour
 
     private float lightAttackDamage;
     private float heavyAttackDamage;
+    private float maxHealth;
+    public float currentHealth;
     public float lightAttackRadius = 0.1f;
     public float heavyAttackRadius = 0.1f;
 
@@ -28,7 +30,10 @@ public class PlayerAnimationController : MonoBehaviour
         pCombat = GetComponent<PlayerCombat>();
 
         lightAttackDamage = 10;
-        heavyAttackDamage = 15;
+        heavyAttackDamage = 17;
+
+        maxHealth = 50;
+        currentHealth = maxHealth;
 }
 
     private void WalkingEnabled()
@@ -59,8 +64,7 @@ public class PlayerAnimationController : MonoBehaviour
 
         foreach (Collider2D collider in detectedObjects)
         {
-            lightAttackDamage = 10f;
-            collider.transform.parent.SendMessage("Damage", attackDetails);
+            collider.transform.SendMessage("Damage", attackDetails);
         }
     }
 
@@ -73,8 +77,7 @@ public class PlayerAnimationController : MonoBehaviour
 
         foreach (Collider2D collider in detectedObjects)
         {
-            heavyAttackDamage = 15f;
-            collider.transform.parent.SendMessage("Damage", attackDetails);
+            collider.transform.SendMessage("Damage", attackDetails);
         }
     }
 
@@ -88,6 +91,13 @@ public class PlayerAnimationController : MonoBehaviour
     {
         pCombat.SetIsAttacking(false);
         pCombat.SetIsHeavyAttacking(false);
+    }
+
+    private void Damage(AttackDetails ad)
+    {
+        //do the shield negation later
+
+        currentHealth -= ad.damageAmount;
     }
 
     private void OnDrawGizmos()

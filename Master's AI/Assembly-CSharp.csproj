@@ -57,9 +57,11 @@
     <Compile Include="Assets\Scripts\AttackDetails.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerAnimationController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
-    <Compile Include="Assets\Dark Knight - Pixel Art\Demo\Sensor_DarkKnight.cs" />
     <Compile Include="Assets\Dark Knight - Pixel Art\Demo\DarkKnight.cs" />
     <Compile Include="Assets\Dark Knight - Pixel Art\ColorSwap\ColorSwap_DarkKnight.cs" />
+    <Compile Include="Assets\Dark Knight - Pixel Art\Demo\Sensor_DarkKnight.cs" />
+    <Compile Include="Assets\Scripts\Boss\BossController.cs" />
+    <Compile Include="Assets\Scripts\Boss\BossAnimationController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Dark Knight - Pixel Art\ColorSwap\Sprites-ColorSwap.shader" />
