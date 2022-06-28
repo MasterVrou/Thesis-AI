@@ -48,11 +48,11 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void FlipEnabled()
     {
-        pController.setCanFlip(true);
+        pController.SetCanFlip(true);
     }
     private void FlipDisabled()
     {
-        pController.setCanFlip(false);
+        pController.SetCanFlip(false);
     }
 
     private void CheckLightAttackHitBox()

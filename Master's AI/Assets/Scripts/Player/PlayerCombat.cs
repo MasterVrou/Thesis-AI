@@ -62,14 +62,14 @@ public class PlayerCombat : MonoBehaviour
 
     private void CheckCombatInput()
     {
-        if (Input.GetMouseButtonDown(0) && PC.getGrounded())
+        if (Input.GetMouseButtonDown(0) && PC.GetGrounded())
         {
             gotInput = true;
             gotLightInput = true;
             lastInputTime = Time.time;
         }
 
-        if (Input.GetMouseButtonDown(1) && PC.getGrounded())
+        if (Input.GetMouseButtonDown(1) && PC.GetGrounded())
         {
 
             gotInput = true;

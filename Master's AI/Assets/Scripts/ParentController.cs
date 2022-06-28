@@ -61,7 +61,7 @@ public class ParentController : MonoBehaviour
     }
 
     //Getters
-    public bool getGrounded()
+    public bool GetGrounded()
     {
         return isGrounded;
     }
@@ -72,7 +72,7 @@ public class ParentController : MonoBehaviour
     }
 
     //Setters
-    public void setCanFlip(bool b)
+    public void SetCanFlip(bool b)
     {
         canFlip = b;
     }

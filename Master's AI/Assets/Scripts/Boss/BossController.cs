@@ -66,6 +66,11 @@ public class BossController : ParentController
         return currentHealth;
     }
 
+    public float GetPlayerPos()
+    {
+        return playerPos.position.x;
+    }
+
     //Setters
     public void SetCurrentHealth(float hp)
     {
