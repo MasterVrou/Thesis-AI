@@ -24,6 +24,16 @@ public class PlayerAnimationController : MonoBehaviour
     public float lightAttackRadius = 0.1f;
     public float heavyAttackRadius = 0.1f;
 
+    private bool inAnimation;
+    //the flip/flop booleans
+    private bool flLight;
+    private bool flHeavy;
+    private bool flDodge;
+    private bool flParry;
+    private bool flJump;
+
+    private string lastMove;
+
     private void Start()
     {
         pController = GetComponent<PlayerController>();
@@ -34,6 +44,16 @@ public class PlayerAnimationController : MonoBehaviour
 
         maxHealth = 50;
         currentHealth = maxHealth;
+
+        inAnimation = false;
+
+        lastMove = "light";
+        
+        flLight = false;
+        flHeavy = false;
+        flDodge = false;
+        flParry = false;
+        flJump = false;
 }
 
     private void WalkingEnabled()
@@ -104,5 +124,57 @@ public class PlayerAnimationController : MonoBehaviour
     {
         Gizmos.DrawSphere(lightAttackHitBoxPos.position, lightAttackRadius);
         Gizmos.DrawSphere(heavyAttackHitBoxPos.position, heavyAttackRadius);
+    }
+
+    //the flip/flop functions chage the flip/flop booleans in order to signal the use of a skill
+    private void UsedLight()
+    {
+        lastMove = "light";
+    }
+
+    private void UsedSkill()
+    {
+        inAnimation = true;
+    }
+
+    private void skillFinished()
+    {
+        inAnimation = false;
+    }
+
+    //Getters
+    public bool GetFlLight()
+    {
+        return flLight;
+    }
+
+    public bool GetFlHeavy()
+    {
+        return flHeavy;
+    }
+
+    public bool GetFlDodge()
+    {
+        return flDodge;
+    }
+
+    public bool GetFlParry()
+    {
+        return flParry;
+    }
+
+    public bool GetFlJump()
+    {
+        return flJump;
+    }
+
+    public bool GetInAnimation()
+    {
+        return inAnimation;
+    }
+
+    public string GetLastMove()
+    {
+        return lastMove;
     }
 }

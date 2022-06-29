@@ -4,19 +4,19 @@ using UnityEngine;
 
 public struct PlayerState
 {
-    Vector3 lightAttack;
-    Vector3 heavyAttack;
-    Vector3 offJump;
-    Vector3 defJump;
-    Vector3 dodge;
-    Vector3 parry;
-    Vector3 distance;//something for position maybe a close/mid/far label
+    public Vector3 lightAttack;
+    public Vector3 heavyAttack;
+    public Vector3 offJump;
+    public Vector3 defJump;
+    public Vector3 dodge;
+    public Vector3 parry;
+    public int distance;//something for position maybe a close/mid/far label
 }
 
 public struct BossAction
 {
-    float meleeAttack;
-    float fireAttack;//undodgeable
-    float block;
-    float charge;//unblockable
+    public float meleeAttack;
+    public float fireAttack;//undodgeable
+    public float block;
+    public float charge;//unblockable
 }

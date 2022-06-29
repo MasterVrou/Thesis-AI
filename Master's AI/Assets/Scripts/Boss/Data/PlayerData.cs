@@ -9,26 +9,40 @@ public class PlayerData : MonoBehaviour
 
     private BossController bController;
     private PlayerController pController;
+    private PlayerAnimationController pAnimController;
 
     private float playerPos;
 
     private string lastMove;
-    private string previousMove;
-    private string prepreviousMove;
 
     private int distanceLabel;
 
-    private bool once;
+    private bool flLight;
+    private bool flHeavy;
+    private bool flDodge;
+    private bool flParry;
+    private bool flJump;
+
+    private bool checkOnce;
 
     private void Start()
     {
         pController = player.GetComponent<PlayerController>();
+        pAnimController = player.GetComponent<PlayerAnimationController>();
+
+        flLight = false;
+        flHeavy = false;
+        flDodge = false;
+        flParry = false;
+        flJump = false;
+
+        checkOnce = false;
     }
 
     private void Update()
     {
         UpdateDistanceLabel();
-
+        CheckLastMove();
     }
     
     //go to player scripts and make variables that hold info for the skills used, or use the is.. booleans
@@ -76,4 +90,47 @@ public class PlayerData : MonoBehaviour
             }
         }
     }
+
+    private void CheckLastMove()
+    {
+        if (pAnimController.GetInAnimation() && !checkOnce)
+        {
+            checkOnce = true;
+
+            if (pAnimController.GetLastMove() == "light")
+            {
+                lastMove = "light";
+            }
+
+            //if (flLight != pAnimController.GetFlLight())
+            //{
+            //    lastMove = "light";
+            //    flLight = !flLight;
+            //}
+            //else if (flHeavy != pAnimController.GetFlHeavy())
+            //{
+            //    lastMove = "heavy";
+            //    flHeavy = !flHeavy;
+            //}
+        }
+
+        
+
+        if (!pAnimController.GetInAnimation())
+        {
+            checkOnce = false;
+        }
+    }
+
+    //Getters
+    public int GetDistanceLabel()
+    {
+        return distanceLabel;
+    }
+
+    public string GetLastMove()
+    {
+        return lastMove;
+    }
+
 }

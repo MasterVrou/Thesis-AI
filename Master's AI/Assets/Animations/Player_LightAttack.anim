@@ -82,6 +82,13 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
+    functionName: UsedSkill
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0
     functionName: WalkingDisabled
     data: 
     objectReferenceParameter: {fileID: 0}
@@ -90,6 +97,13 @@ AnimationClip:
     messageOptions: 0
   - time: 0
     functionName: FlipDisabled
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.016666668
+    functionName: UsedLight
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -118,6 +132,13 @@ AnimationClip:
     messageOptions: 0
   - time: 0.28333333
     functionName: FinishLightAttack
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.28333333
+    functionName: skillFinished
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
