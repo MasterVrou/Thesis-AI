@@ -101,6 +101,10 @@ public class PlayerData : MonoBehaviour
             {
                 lastMove = "light";
             }
+            if (pAnimController.GetLastMove() == "heavy")
+            {
+                lastMove = "heavy";
+            }
 
             //if (flLight != pAnimController.GetFlLight())
             //{

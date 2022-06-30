@@ -56,11 +56,11 @@ public class BossData : MonoBehaviour
 
     private void PushRight()//in future put a State parameter 
     {
-        testState.lightAttack.y = testState.lightAttack.x;
         testState.lightAttack.z = testState.lightAttack.y;
+        testState.lightAttack.y = testState.lightAttack.x;
 
-        testState.heavyAttack.y = testState.heavyAttack.x;
         testState.heavyAttack.z = testState.heavyAttack.y;
+        testState.heavyAttack.y = testState.heavyAttack.x;
 
     }
 }

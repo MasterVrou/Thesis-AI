@@ -47,7 +47,7 @@ public class PlayerAnimationController : MonoBehaviour
 
         inAnimation = false;
 
-        lastMove = "light";
+        //lastMove = "light";
         
         flLight = false;
         flHeavy = false;
@@ -132,11 +132,11 @@ public class PlayerAnimationController : MonoBehaviour
         lastMove = "light";
     }
 
-    private void UsedSkill()
+    private void UsedHeavy()
     {
-        inAnimation = true;
+        lastMove = "heavy";
     }
-
+    //inAnimation help to register each skill once in DataManagement
     private void skillFinished()
     {
         inAnimation = false;

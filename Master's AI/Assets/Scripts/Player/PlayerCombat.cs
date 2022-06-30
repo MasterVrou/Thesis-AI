@@ -27,6 +27,8 @@ public class PlayerCombat : MonoBehaviour
     private bool isHeavyAttacking;
     private bool isShielded;
 
+    private bool inAnimation;
+
     private void Start()
     {
         PC = GetComponent<PlayerController>();
@@ -38,6 +40,8 @@ public class PlayerCombat : MonoBehaviour
         isLightAttacking = false;
         isHeavyAttacking = false;
         isShielded = false;
+
+        inAnimation = false;
     }
 
     private void Update()
