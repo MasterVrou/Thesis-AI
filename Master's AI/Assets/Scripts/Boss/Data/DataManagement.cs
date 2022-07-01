@@ -19,14 +19,14 @@ public class DataManagement : MonoBehaviour
 
     private int distanceLabel;
 
-    private bool checkOnce;
+    private bool updateOnce;
 
     private void Start()
     {
         pController = player.GetComponent<PlayerController>();
         pAnimController = player.GetComponent<PlayerAnimationController>();
 
-        checkOnce = false;
+        updateOnce = false;
 
         currentState.lightAttack = Vector3.zero;
         currentState.heavyAttack = Vector3.zero;
@@ -45,12 +45,19 @@ public class DataManagement : MonoBehaviour
 
     private void LogPrint()
     {
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+        if (!pAnimController.GetInAnimation() && !updateOnce)
         {
+            updateOnce = true;
+
             UpdateCurrentState();
 
             Debug.Log("Light Data: " + currentState.lightAttack.x + ", " + currentState.lightAttack.y + ", " + currentState.lightAttack.z + "\n"
                     + "Heavy Data: " + currentState.heavyAttack.x + ", " + currentState.heavyAttack.y + ", " + currentState.heavyAttack.z);
+        }
+
+        if (pAnimController.GetInAnimation())
+        {
+            updateOnce = false;
         }
     }
 

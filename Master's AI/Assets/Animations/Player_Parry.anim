@@ -70,14 +70,14 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
-    functionName: FlipDisabled
+    functionName: WalkingDisabled
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 0
-    functionName: WalkingDisabled
+    functionName: FlipDisabled
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -92,6 +92,13 @@ AnimationClip:
     messageOptions: 0
   - time: 0.16666667
     functionName: FlipEnabled
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.16666667
+    functionName: AnimationFinished
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class PlayerController : ParentController
 {
+    private PlayerAnimationController pAnimController;
+
     private bool isWalking;
     private bool isDodging;
-
     private bool canWalk;
+    private bool startingAnim;
 
     //1 is right, -1 is left
     private float dodgeStartTime;
@@ -23,8 +25,10 @@ public class PlayerController : ParentController
 
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        pAnimController = GetComponent<PlayerAnimationController>();
 
         isDodging = false;
+        startingAnim = false;
 
         movementSpeed = 7;
         jumpSpeed = 12;
@@ -76,6 +80,8 @@ public class PlayerController : ParentController
         if (isGrounded && rb.velocity.y <= 0)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+            //////////////////////////////////////////////////////////inAnim
+            pAnimController.SetInAnimation(true);
         }
     }
 
@@ -85,6 +91,8 @@ public class PlayerController : ParentController
         {
             isDodging = true;
             dodgeStartTime = Time.time;
+            //////////////////////////////////////////////////////////inAnim
+            pAnimController.SetInAnimation(true);
         }
     }
 

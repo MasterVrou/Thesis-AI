@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    
-
+    private PlayerAnimationController pAnimController;
     private PlayerController PC;
     private Animator anim;
 
@@ -27,12 +26,13 @@ public class PlayerCombat : MonoBehaviour
     private bool isHeavyAttacking;
     private bool isShielded;
 
-    private bool inAnimation;
+    private bool startingAnim;
 
     private void Start()
     {
         PC = GetComponent<PlayerController>();
         anim = GetComponent<Animator>();
+        pAnimController = GetComponent<PlayerAnimationController>();
 
         inputTimer = 0.2f;
 
@@ -41,7 +41,7 @@ public class PlayerCombat : MonoBehaviour
         isHeavyAttacking = false;
         isShielded = false;
 
-        inAnimation = false;
+        startingAnim = false;
     }
 
     private void Update()
@@ -104,6 +104,8 @@ public class PlayerCombat : MonoBehaviour
                     gotLightInput = false;
                     isAttacking = true;
                     isLightAttacking = true;
+                    //////////////////////////////////////////////////////////inAnim
+                    pAnimController.SetInAnimation(true);
                 }
             }
 
@@ -115,6 +117,8 @@ public class PlayerCombat : MonoBehaviour
                     gotHeavyInput = false;
                     isAttacking = true;
                     isHeavyAttacking = true;
+                    //////////////////////////////////////////////////////////inAnim
+                    pAnimController.SetInAnimation(true);
                 }
             }
         }

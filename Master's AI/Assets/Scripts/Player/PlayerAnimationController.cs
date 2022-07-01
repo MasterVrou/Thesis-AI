@@ -137,7 +137,7 @@ public class PlayerAnimationController : MonoBehaviour
         lastMove = "heavy";
     }
     //inAnimation help to register each skill once in DataManagement
-    private void skillFinished()
+    private void AnimationFinished()
     {
         inAnimation = false;
     }
@@ -176,5 +176,11 @@ public class PlayerAnimationController : MonoBehaviour
     public string GetLastMove()
     {
         return lastMove;
+    }
+
+    //Setters
+    public void SetInAnimation(bool b)
+    {
+        inAnimation = b;
     }
 }
