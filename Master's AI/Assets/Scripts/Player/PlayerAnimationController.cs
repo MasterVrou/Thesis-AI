@@ -20,6 +20,9 @@ public class PlayerAnimationController : MonoBehaviour
     private float lightAttackDamage;
     private float heavyAttackDamage;
     private float maxHealth;
+    private float sJump;
+    private float fJump;
+
     public float currentHealth;
     public float lightAttackRadius = 0.1f;
     public float heavyAttackRadius = 0.1f;
@@ -126,7 +129,6 @@ public class PlayerAnimationController : MonoBehaviour
         Gizmos.DrawSphere(heavyAttackHitBoxPos.position, heavyAttackRadius);
     }
 
-    //the flip/flop functions chage the flip/flop booleans in order to signal the use of a skill
     private void UsedLight()
     {
         lastMove = "light";
@@ -136,6 +138,28 @@ public class PlayerAnimationController : MonoBehaviour
     {
         lastMove = "heavy";
     }
+
+    private void UsedDodge()
+    {
+        lastMove = "dodge";
+    }
+
+    private void UsedParry()
+    {
+        lastMove = "parry";
+    }
+
+    private void UsedJump()
+    {
+        sJump = this.transform.position.x;
+        lastMove = "jump";
+    }
+
+    private void JumpFinish()
+    {
+        fJump = this.transform.position.x;
+    }
+
     //inAnimation help to register each skill once in DataManagement
     private void AnimationFinished()
     {
@@ -178,6 +202,16 @@ public class PlayerAnimationController : MonoBehaviour
         return lastMove;
     }
 
+    //sJump is the start of the jump
+    public float GetSJump()
+    {
+        return sJump;
+    }
+
+    public float GetFJump()
+    {
+        return fJump;
+    }
     //Setters
     public void SetInAnimation(bool b)
     {

@@ -52,7 +52,11 @@ public class DataManagement : MonoBehaviour
             UpdateCurrentState();
 
             Debug.Log("Light Data: " + currentState.lightAttack.x + ", " + currentState.lightAttack.y + ", " + currentState.lightAttack.z + "\n"
-                    + "Heavy Data: " + currentState.heavyAttack.x + ", " + currentState.heavyAttack.y + ", " + currentState.heavyAttack.z);
+                    + "Heavy Data: " + currentState.heavyAttack.x + ", " + currentState.heavyAttack.y + ", " + currentState.heavyAttack.z + "\n"
+                    + "Dodge Data: " + currentState.dodge.x + ", " + currentState.dodge.y + ", " + currentState.dodge.z + "\n"
+                    + "Parry Data: " + currentState.parry.x + ", " + currentState.parry.y + ", " + currentState.parry.z + "\n"
+                    + "DefJump Data: " + currentState.defJump.x + ", " + currentState.defJump.y + ", " + currentState.defJump.z + "\n"
+                    + "OfJump Data: " + currentState.offJump.x + ", " + currentState.offJump.y + ", " + currentState.offJump.z);
         }
 
         if (pAnimController.GetInAnimation())
@@ -120,7 +124,31 @@ public class DataManagement : MonoBehaviour
         {
             currentState.heavyAttack.x = 1;
         }
+        else if(pAnimController.GetLastMove() == "dodge")
+        {
+            currentState.dodge.x = 1;
+        }
+        else if(pAnimController.GetLastMove() == "parry")
+        {
+            currentState.parry.x = 1;
+        }
+        else if(pAnimController.GetLastMove() == "jump")
+        {
+            float bossPos = this.transform.position.x;
+            float sDist = pAnimController.GetSJump();
+            float fDist = pAnimController.GetFJump();
+
+            if(Mathf.Abs(bossPos - sDist) > Mathf.Abs(bossPos - fDist))
+            {
+                currentState.offJump.x = 1;
+            }
+            else
+            {
+                currentState.defJump.x = 1;
+            }
+        }
     }
+
 
     private void PushRight()//in future put a State parameter 
     {
@@ -131,6 +159,22 @@ public class DataManagement : MonoBehaviour
         currentState.heavyAttack.z = currentState.heavyAttack.y;
         currentState.heavyAttack.y = currentState.heavyAttack.x;
         currentState.heavyAttack.x = 0;
+
+        currentState.dodge.z = currentState.dodge.y;
+        currentState.dodge.y = currentState.dodge.x;
+        currentState.dodge.x = 0;
+
+        currentState.parry.z = currentState.parry.y;
+        currentState.parry.y = currentState.parry.x;
+        currentState.parry.x = 0;
+
+        currentState.defJump.z = currentState.defJump.y;
+        currentState.defJump.y = currentState.defJump.x;
+        currentState.defJump.x = 0;
+
+        currentState.offJump.z = currentState.offJump.y;
+        currentState.offJump.y = currentState.offJump.x;
+        currentState.offJump.x = 0;
     }
 
     //Getters

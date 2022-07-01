@@ -95,7 +95,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.016666668
+  - time: 0
     functionName: UsedLight
     data: 
     objectReferenceParameter: {fileID: 0}
@@ -110,20 +110,6 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0.28333333
-    functionName: WalkingEnabled
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.28333333
-    functionName: FlipEnabled
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.28333333
     functionName: FinishLightAttack
     data: 
     objectReferenceParameter: {fileID: 0}
@@ -132,6 +118,20 @@ AnimationClip:
     messageOptions: 0
   - time: 0.28333333
     functionName: AnimationFinished
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.28333333
+    functionName: WalkingEnabled
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.28333333
+    functionName: FlipEnabled
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

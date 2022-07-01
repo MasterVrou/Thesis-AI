@@ -84,10 +84,11 @@ public class PlayerCombat : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E) && !isShielded)
         {
-
             isShielded = true;
             //call NoShield 3 seconds later
             Invoke("NoShield", 0.3f);
+            //////////////////////////////////////////////////////////inAnim
+            pAnimController.SetInAnimation(true);
         }
     }
 
