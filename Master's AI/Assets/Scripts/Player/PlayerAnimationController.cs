@@ -119,7 +119,14 @@ public class PlayerAnimationController : MonoBehaviour
     private void Damage(AttackDetails ad)
     {
         //do the shield negation later
-
+        if (pCombat.GetIsShielded())
+        {
+            if((ad.position.x > this.transform.position.x && pController.GetIsFacingRight())
+                || (ad.position.x < this.transform.position.x && !pController.GetIsFacingRight()))
+            {
+                return;
+            }
+        }
         currentHealth -= ad.damageAmount;
     }
 

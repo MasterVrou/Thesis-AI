@@ -10,7 +10,6 @@ public class PlayerCombat : MonoBehaviour
 
     private AttackDetails attackDetails;
 
-    private float lastInputTime = Mathf.NegativeInfinity;
     private float inputTimer;
     private float heavyTimer;
     private float lightAttackDamage;
@@ -48,7 +47,6 @@ public class PlayerCombat : MonoBehaviour
     {
         UpdateAnimations();
         CheckCombatInput();
-        CheckAttacks();
     }
 
     void NoShield()
@@ -66,70 +64,58 @@ public class PlayerCombat : MonoBehaviour
 
     private void CheckCombatInput()
     {
-        if (Input.GetMouseButtonDown(0) && PC.GetGrounded())
+        if (!isAttacking)
         {
-            gotInput = true;
-            gotLightInput = true;
-            lastInputTime = Time.time;
+            if (Input.GetMouseButtonDown(0) && PC.GetGrounded())
+            {
+                LightAttack();
+            }
+
+            if (Input.GetMouseButtonDown(1) && PC.GetGrounded())
+            {
+                HeavyAttack();
+            }
+
+            if (Input.GetKeyDown(KeyCode.E) && !isShielded)
+            {
+                Parry();
+            }
         }
+    }
 
-        if (Input.GetMouseButtonDown(1) && PC.GetGrounded())
+    private void Parry()
+    {
+        isShielded = true;
+        //call NoShield 3 seconds later
+        Invoke("NoShield", 0.3f);
+        //////////////////////////////////////////////////////////inAnim
+        pAnimController.SetInAnimation(true);
+    }
+
+    private void LightAttack()
+    {
+        if (!isLightAttacking)
         {
-
-            gotInput = true;
-            gotHeavyInput = true;
-            lastInputTime = Time.time;
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.E) && !isShielded)
-        {
-            isShielded = true;
-            //call NoShield 3 seconds later
-            Invoke("NoShield", 0.3f);
+            gotInput = false;
+            gotLightInput = false;
+            isAttacking = true;
+            isLightAttacking = true;
             //////////////////////////////////////////////////////////inAnim
             pAnimController.SetInAnimation(true);
         }
     }
 
-    private void CheckAttacks()
+    private void HeavyAttack()
     {
-        if (gotInput)
+        if (!isHeavyAttacking)
         {
-
-            if (gotLightInput && !isAttacking)
-            {
-                if (!isLightAttacking)
-                {
-                    gotInput = false;
-                    gotLightInput = false;
-                    isAttacking = true;
-                    isLightAttacking = true;
-                    //////////////////////////////////////////////////////////inAnim
-                    pAnimController.SetInAnimation(true);
-                }
-            }
-
-            if (gotHeavyInput && !isAttacking)
-            {
-                if (!isHeavyAttacking)
-                {
-                    gotInput = false;
-                    gotHeavyInput = false;
-                    isAttacking = true;
-                    isHeavyAttacking = true;
-                    //////////////////////////////////////////////////////////inAnim
-                    pAnimController.SetInAnimation(true);
-                }
-            }
-        }
-
-        if (Time.time >= lastInputTime + inputTimer)
-        {
-            //wait for input
             gotInput = false;
+            gotHeavyInput = false;
+            isAttacking = true;
+            isHeavyAttacking = true;
+            //////////////////////////////////////////////////////////inAnim
+            pAnimController.SetInAnimation(true);
         }
-
     }
 
     //Getters
