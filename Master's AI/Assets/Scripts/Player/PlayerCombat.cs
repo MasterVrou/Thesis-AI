@@ -64,37 +64,38 @@ public class PlayerCombat : MonoBehaviour
 
     private void CheckCombatInput()
     {
-        if (!isAttacking)
+        if (Input.GetMouseButtonDown(0) && PC.GetGrounded())
         {
-            if (Input.GetMouseButtonDown(0) && PC.GetGrounded())
-            {
-                LightAttack();
-            }
+            LightAttack();
+        }
 
-            if (Input.GetMouseButtonDown(1) && PC.GetGrounded())
-            {
-                HeavyAttack();
-            }
+        if (Input.GetMouseButtonDown(1) && PC.GetGrounded())
+        {
+            HeavyAttack();
+        }
 
-            if (Input.GetKeyDown(KeyCode.E) && !isShielded)
-            {
-                Parry();
-            }
+        if (Input.GetKeyDown(KeyCode.E) && !isShielded)
+        {
+            Parry();
         }
     }
 
-    private void Parry()
+    public void Parry()
     {
-        isShielded = true;
-        //call NoShield 3 seconds later
-        Invoke("NoShield", 0.3f);
-        //////////////////////////////////////////////////////////inAnim
-        pAnimController.SetInAnimation(true);
+        if (!isAttacking)
+        {
+            isShielded = true;
+            //call NoShield 3 seconds later
+            Invoke("NoShield", 0.3f);
+            //////////////////////////////////////////////////////////inAnim
+            pAnimController.SetInAnimation(true);
+        }
+        
     }
 
-    private void LightAttack()
+    public void LightAttack()
     {
-        if (!isLightAttacking)
+        if (!isLightAttacking && !isAttacking)
         {
             gotInput = false;
             gotLightInput = false;
@@ -105,9 +106,9 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    private void HeavyAttack()
+    public void HeavyAttack()
     {
-        if (!isHeavyAttacking)
+        if (!isHeavyAttacking && !isAttacking)
         {
             gotInput = false;
             gotHeavyInput = false;

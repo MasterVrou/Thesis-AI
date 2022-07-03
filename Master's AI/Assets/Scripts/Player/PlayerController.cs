@@ -75,7 +75,7 @@ public class PlayerController : ParentController
         }
     }
 
-    private void Jump()
+    public void Jump()
     {
         if (isGrounded && rb.velocity.y <= 0)
         {
@@ -85,7 +85,7 @@ public class PlayerController : ParentController
         }
     }
 
-    private void Dodge()
+    public void Dodge()
     {
         if (isGrounded)
         {
