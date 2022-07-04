@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class TrainingAI : MonoBehaviour
 {
-    public GameObject boss;
+    [SerializeField]
+    private float timeScale = 1;
+
+    [SerializeField]
+    private GameObject boss;
 
     private PlayerController pController;
     private PlayerCombat pCombat;
@@ -26,40 +30,76 @@ public class TrainingAI : MonoBehaviour
         distanceLabel = bData.GetDistanceLabel();
         nextActionTime = 0;
 
-        skillPeriod = 0.2f;
-        walkPeriod = 0.3f;
+        skillPeriod = 0.8f;
+        walkPeriod = 0.1f;
+        Time.timeScale = timeScale;
     }
     
     private void Update()
     {
+        CheckSprites();
         MakeDicision();
     }
 
+    private void CheckSprites()
+    {
+        if (boss.transform.position.x > this.transform.position.x)
+        {
+            if (!pController.GetIsFacingRight())
+            {
+                pController.AutoFlip();
+            }
+        }
+        else
+        {
+            if (pController.GetIsFacingRight())
+            {
+                pController.AutoFlip();
+            }
+        }
+    }
     private void MakeDicision()
     {
         distanceLabel = bData.GetDistanceLabel();
 
-        if (Time.time > nextActionTime)
+        if (Mathf.Abs(distanceLabel) == 1)
         {
-            if (Mathf.Abs(distanceLabel) == 1)
+            if (Time.time > (nextActionTime * timeScale))
             {
-                nextActionTime += skillPeriod;
+                nextActionTime += skillPeriod / timeScale;
                 pController.SetIsWalking(false);
                 ChooseSkill();
             }
-            else
-            {
-                nextActionTime += walkPeriod;
-                pController.SetIsWalking(true);
-                CloseDistance();
-            }
-
+        }
+        else
+        {
+            pController.SetIsWalking(true);
+            CloseDistance();
         }
     }
 
     private void CloseDistance()
     {
-        if(boss.transform.position.x > this.transform.position.x)
+        //if(boss.transform.position.x > this.transform.position.x)
+        //{
+        //    if (!pController.GetIsFacingRight())
+        //    {
+        //        pController.AutoFlip();
+        //    }
+
+        //        pController.SetMovementDirection(1);
+        //}
+        //else
+        //{
+        //    if (pController.GetIsFacingRight())
+        //    {
+        //        pController.AutoFlip();
+        //    }
+
+        //    pController.SetMovementDirection(-1);
+        //}
+
+        if (pController.GetIsFacingRight())
         {
             pController.SetMovementDirection(1);
         }
@@ -74,7 +114,7 @@ public class TrainingAI : MonoBehaviour
         
         if (Random.Range(0, 10) <= 3)
         {
-            float r = Random.Range(0, 2);
+            float r = Random.Range(0, 3);
 
             if (r == 0)
             {
@@ -91,7 +131,7 @@ public class TrainingAI : MonoBehaviour
         }
         else
         {
-            float r = Random.Range(0, 1);
+            float r = Random.Range(0, 2);
 
             if (r == 0)
             {

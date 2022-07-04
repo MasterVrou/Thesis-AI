@@ -29,6 +29,7 @@ public class PlayerController : ParentController
 
         isDodging = false;
         startingAnim = false;
+        canWalk = true;
 
         movementSpeed = 7;
         jumpSpeed = 12;
@@ -143,13 +144,31 @@ public class PlayerController : ParentController
         }
     }
 
+    //For training
     public void AutoWalk()
     {
         if (isWalking)
         {
             rb.velocity = new Vector2(movementSpeed * movementDirection, rb.velocity.y);
         }
+        else
+        {
+            rb.velocity = new Vector2(0, rb.velocity.y);
+        }
+      
+        
             
+    }
+
+    //For training
+    public void AutoFlip()
+    {
+        if (!isDodging)
+        {
+            isFacingRight = !isFacingRight;
+            transform.Rotate(0.0f, 180.0f, 0.0f);
+        }
+        
     }
 
     protected override void CheckSurroundings()
