@@ -4,34 +4,74 @@ using UnityEngine;
 
 public class TrainingAI : MonoBehaviour
 {
+    public GameObject boss;
+
     private PlayerController pController;
     private PlayerCombat pCombat;
+    private DataManagement bData;
 
     private float random;
     private float nextActionTime;
-    private float period;
+    private float skillPeriod;
+    private float walkPeriod;
+
+    private int distanceLabel;
 
     private void Start()
     {
         pController = GetComponent<PlayerController>();
         pCombat = GetComponent<PlayerCombat>();
+        bData = boss.GetComponent<DataManagement>();
 
+        distanceLabel = bData.GetDistanceLabel();
         nextActionTime = 0;
-        period = 0.1f;
-    }
 
+        skillPeriod = 0.2f;
+        walkPeriod = 0.3f;
+    }
+    
     private void Update()
     {
-        if(Time.time > nextActionTime)
-        {
-            nextActionTime += period;
+        MakeDicision();
+    }
 
-            Auto();
+    private void MakeDicision()
+    {
+        distanceLabel = bData.GetDistanceLabel();
+
+        if (Time.time > nextActionTime)
+        {
+            if (Mathf.Abs(distanceLabel) == 1)
+            {
+                nextActionTime += skillPeriod;
+                pController.SetIsWalking(false);
+                ChooseSkill();
+            }
+            else
+            {
+                nextActionTime += walkPeriod;
+                pController.SetIsWalking(true);
+                CloseDistance();
+            }
+
         }
     }
 
-    private void Auto()
+    private void CloseDistance()
     {
+        if(boss.transform.position.x > this.transform.position.x)
+        {
+            pController.SetMovementDirection(1);
+        }
+        else
+        {
+            pController.SetMovementDirection(-1);
+        }
+    }
+
+    private void ChooseSkill()
+    {
+        
         if (Random.Range(0, 10) <= 3)
         {
             float r = Random.Range(0, 2);
@@ -62,10 +102,5 @@ public class TrainingAI : MonoBehaviour
                 pCombat.HeavyAttack();
             }
         }
-    }
-
-    private void Deffensive()
-    {
-
     }
 }

@@ -74,7 +74,7 @@ public class DataManagement : MonoBehaviour
 
         float distance = this.transform.position.x - playerPos;
 
-        if (Mathf.Abs(distance) < 1.8)
+        if (Mathf.Abs(distance) < 2.5)
         {
             if (distance >= 0)
             {
@@ -86,7 +86,7 @@ public class DataManagement : MonoBehaviour
             }
             return;
         }
-        else if (Mathf.Abs(distance) < 3.6)
+        else if (Mathf.Abs(distance) < 4)
         {
             if (distance >= 0)
             {
@@ -178,4 +178,8 @@ public class DataManagement : MonoBehaviour
     }
 
     //Getters
+    public int GetDistanceLabel()
+    {
+        return distanceLabel;
+    }
 }

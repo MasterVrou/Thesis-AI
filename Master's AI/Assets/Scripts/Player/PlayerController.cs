@@ -43,13 +43,18 @@ public class PlayerController : ParentController
         base.Update();
 
         UpdateAnimations();
-        CheckInput();
+        //////////////////////////////////////////////uncomment after training
+        //CheckInput();
         CheckSurroundings();
     }
 
     protected override void FixedUpdate()
     {
-        Walk();
+        //Training Methods
+        AutoWalk();
+
+        //////////////////////////////////////////////uncomment after training
+        //Walk();
         CheckDodge();
     }
 
@@ -138,6 +143,15 @@ public class PlayerController : ParentController
         }
     }
 
+    public void AutoWalk()
+    {
+        if (isWalking)
+        {
+            rb.velocity = new Vector2(movementSpeed * movementDirection, rb.velocity.y);
+        }
+            
+    }
+
     protected override void CheckSurroundings()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, whatIsGround);
@@ -155,5 +169,15 @@ public class PlayerController : ParentController
     public void setCanWalk(bool b)
     {
         canWalk = b;
+    }
+
+    public void SetIsWalking(bool b)
+    {
+        isWalking = b;
+    }
+
+    public void SetMovementDirection(int i)
+    {
+        movementDirection = i;
     }
 }

@@ -11,6 +11,8 @@ public struct PlayerState
     public Vector3 dodge;
     public Vector3 parry;
     public int distance;//something for position maybe a close/mid/far label
+
+    //give info about where the player is facing
 }
 
 public struct BossAction
