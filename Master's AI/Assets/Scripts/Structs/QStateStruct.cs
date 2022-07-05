@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//1.572.864 States
 public struct PlayerState
 {
     public Vector3 lightAttack;

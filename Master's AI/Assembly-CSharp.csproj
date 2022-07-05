@@ -59,15 +59,13 @@
     <Compile Include="Assets\Scripts\Player\PlayerAnimationController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\Dark Knight - Pixel Art\Demo\DarkKnight.cs" />
-    <Compile Include="Assets\Scripts\Boss\Data\PlayerData.cs" />
     <Compile Include="Assets\Dark Knight - Pixel Art\ColorSwap\ColorSwap_DarkKnight.cs" />
     <Compile Include="Assets\Scripts\Structs\QStateStruct.cs" />
     <Compile Include="Assets\Scripts\ParentController.cs" />
-    <Compile Include="Assets\Scripts\Boss\Data\BossData.cs" />
+    <Compile Include="Assets\Scripts\Player\Auto\TrainingAI.cs" />
     <Compile Include="Assets\Dark Knight - Pixel Art\Demo\Sensor_DarkKnight.cs" />
     <Compile Include="Assets\Scripts\Boss\BossController.cs" />
     <Compile Include="Assets\Scripts\Boss\BossAnimationController.cs" />
-    <Compile Include="Assets\Scripts\Player\Auto\TrainingAI.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Dark Knight - Pixel Art\ColorSwap\Sprites-ColorSwap.shader" />
@@ -711,6 +709,12 @@
     </Reference>
     <Reference Include="Unity.2D.IK.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.2D.IK.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Cinemachine">
+      <HintPath>Library\ScriptAssemblies\Cinemachine.dll</HintPath>
+    </Reference>
+    <Reference Include="com.unity.cinemachine.editor">
+      <HintPath>Library\ScriptAssemblies\com.unity.cinemachine.editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Animation.Triangle.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.2D.Animation.Triangle.Runtime.dll</HintPath>
