@@ -21,6 +21,8 @@ public class DataManagement : MonoBehaviour
 
     private bool updateOnce;
 
+    private int counter = 0;
+    private float time;
     //private void Awake()
     //{
         
@@ -35,17 +37,17 @@ public class DataManagement : MonoBehaviour
 
         updateOnce = false;
 
-        currentState.lightAttack = Vector3.zero;
-        currentState.heavyAttack = Vector3.zero;
-        currentState.offJump = Vector3.zero;
-        currentState.defJump = Vector3.zero;
-        currentState.dodge = Vector3.zero;
-        currentState.parry = Vector3.zero;
+        currentState.lightAttack = Vector2Int.zero;
+        currentState.heavyAttack = Vector2Int.zero;
+        currentState.offJump = Vector2Int.zero;
+        currentState.defJump = Vector2Int.zero;
+        currentState.dodge = Vector2Int.zero;
+        currentState.parry = Vector2Int.zero;
         currentState.distance = 1;
 
         Qtable = new Dictionary<PlayerState, BossAction>();
 
-        //QtableSetUp();
+        QtableSetUp();
     }
 
     private void Update()
@@ -58,20 +60,18 @@ public class DataManagement : MonoBehaviour
     private void QtableSetUp()
     {
         PlayerState ps;
-        Vector3Int la, ha, pr, dg, oj, dj;
-        int dl;
 
-        for(int liA=0; liA < 8; liA++)
+        for(int liA=0; liA < 4; liA++)
         {
-            for(int heA=0; heA < 8; heA++)
+            for(int heA=0; heA < 4; heA++)
             {
-                for(int parry=0; parry < 8; parry++)
+                for(int parry=0; parry < 4; parry++)
                 {
-                    for(int dodge=0; dodge < 8; dodge++)
+                    for(int dodge=0; dodge < 4; dodge++)
                     {
-                        for(int offJ=0; offJ < 8; offJ++)
+                        for(int offJ=0; offJ < 4; offJ++)
                         {
-                            for(int defJ=0; defJ < 8; defJ++)
+                            for(int defJ=0; defJ < 4; defJ++)
                             {
                                 for(int deL=0; deL < 6; deL++)
                                 {
@@ -84,6 +84,14 @@ public class DataManagement : MonoBehaviour
                                     ps.distance = DisanceEntry(deL);
 
                                     Qtable.Add(ps, ActionRandomiser());
+
+                                    //counter++;
+                                    //time += Time.deltaTime;
+                                    //if(time > 5)
+                                    //{
+                                    //    time = 0;
+                                    //    Debug.Log(counter);
+                                    //}
                                 }
                             }
                         }
@@ -105,37 +113,21 @@ public class DataManagement : MonoBehaviour
         return a;
     }
 
-    private Vector3Int SkillEntry(int e)
+    private Vector2Int SkillEntry(int e)
     {
-        Vector3Int entry = new Vector3Int(1, 1, 1);
+        Vector2Int entry = new Vector2Int(1, 1);
 
         if(e == 0)
         {
-            entry = new Vector3Int(0, 0, 0);
+            entry = new Vector2Int(0, 0);
         }
         else if(e == 1)
         {
-            entry = new Vector3Int(0, 0, 1);
+            entry = new Vector2Int(0, 1);
         }
         else if(e == 2)
         {
-            entry = new Vector3Int(0, 1, 0);
-        }
-        else if(e == 3)
-        {
-            entry = new Vector3Int(0, 1, 1);
-        }
-        else if(e == 4)
-        {
-            entry = new Vector3Int(1, 0, 0);
-        }
-        else if(e == 5)
-        {
-            entry = new Vector3Int(1, 0, 1);
-        }
-        else if(e == 6)
-        {
-            entry = new Vector3Int(1, 1, 0);
+            entry = new Vector2Int(1, 0);
         }
 
         return entry;
@@ -177,12 +169,12 @@ public class DataManagement : MonoBehaviour
 
         //    UpdateCurrentState();
 
-        //    Debug.Log("Light Data: " + currentState.lightAttack.x + ", " + currentState.lightAttack.y + ", " + currentState.lightAttack.z + "\n"
-        //            + "Heavy Data: " + currentState.heavyAttack.x + ", " + currentState.heavyAttack.y + ", " + currentState.heavyAttack.z + "\n"
-        //            + "Dodge Data: " + currentState.dodge.x + ", " + currentState.dodge.y + ", " + currentState.dodge.z + "\n"
-        //            + "Parry Data: " + currentState.parry.x + ", " + currentState.parry.y + ", " + currentState.parry.z + "\n"
-        //            + "DefJump Data: " + currentState.defJump.x + ", " + currentState.defJump.y + ", " + currentState.defJump.z + "\n"
-        //            + "OfJump Data: " + currentState.offJump.x + ", " + currentState.offJump.y + ", " + currentState.offJump.z);
+        //    Debug.Log("Light Data: " + currentState.lightAttack.x + ", " + currentState.lightAttack.y + "\n"
+        //            + "Heavy Data: " + currentState.heavyAttack.x + ", " + currentState.heavyAttack.y + "\n"
+        //            + "Dodge Data: " + currentState.dodge.x + ", " + currentState.dodge.y + ", " + "\n"
+        //            + "Parry Data: " + currentState.parry.x + ", " + currentState.parry.y + ", " + "\n"
+        //            + "DefJump Data: " + currentState.defJump.x + ", " + currentState.defJump.y + "\n"
+        //            + "OfJump Data: " + currentState.offJump.x + ", " + currentState.offJump.y);
         //}
 
         //if (pAnimController.GetInAnimation())
@@ -195,12 +187,12 @@ public class DataManagement : MonoBehaviour
             updateOnce = true;
 
             PlayerState ps;
-            ps.lightAttack = Vector3.zero;
-            ps.heavyAttack = Vector3.zero;
-            ps.parry = Vector3.zero;
-            ps.dodge = Vector3.zero;
-            ps.offJump = Vector3.zero;
-            ps.defJump = Vector3.zero;
+            ps.lightAttack = Vector2Int.zero;
+            ps.heavyAttack = Vector2Int.zero;
+            ps.parry = Vector2Int.zero;
+            ps.dodge = Vector2Int.zero;
+            ps.offJump = Vector2Int.zero;
+            ps.defJump = Vector2Int.zero;
             ps.distance = 1;
             BossAction bs;
             bs.block = 0;
@@ -208,7 +200,7 @@ public class DataManagement : MonoBehaviour
             bs.fireAttack = 0;
             bs.meleeAttack = 0;
 
-            Qtable.Add(ps, bs);
+            //Qtable.Add(ps, bs);
 
             Debug.Log(Qtable[ps].block);
         }
@@ -301,27 +293,21 @@ public class DataManagement : MonoBehaviour
 
     private void PushRight()//in future put a State parameter 
     {
-        currentState.lightAttack.z = currentState.lightAttack.y;
         currentState.lightAttack.y = currentState.lightAttack.x;
         currentState.lightAttack.x = 0;
 
-        currentState.heavyAttack.z = currentState.heavyAttack.y;
         currentState.heavyAttack.y = currentState.heavyAttack.x;
         currentState.heavyAttack.x = 0;
 
-        currentState.dodge.z = currentState.dodge.y;
         currentState.dodge.y = currentState.dodge.x;
         currentState.dodge.x = 0;
 
-        currentState.parry.z = currentState.parry.y;
         currentState.parry.y = currentState.parry.x;
         currentState.parry.x = 0;
 
-        currentState.defJump.z = currentState.defJump.y;
         currentState.defJump.y = currentState.defJump.x;
         currentState.defJump.x = 0;
 
-        currentState.offJump.z = currentState.offJump.y;
         currentState.offJump.y = currentState.offJump.x;
         currentState.offJump.x = 0;
     }
