@@ -174,6 +174,11 @@ public class PlayerAnimationController : MonoBehaviour
     }
 
     //Getters
+    public float GetCurrentHP()
+    {
+        return currentHealth;
+    }
+
     public bool GetFlLight()
     {
         return flLight;
