@@ -8,6 +8,9 @@ public class BossController : ParentController
     private Transform playerPos;
 
     private bool isDying;
+    private bool isMeleeAttaking;
+    private bool isFireAttacking;
+    private bool triggerOnce;
 
     private float maxHealth;
     public float currentHealth;
@@ -21,6 +24,9 @@ public class BossController : ParentController
         anim = GetComponent<Animator>();
 
         isDying = false;
+        isMeleeAttaking = false;
+        isFireAttacking = false;
+        triggerOnce = false;
 
         maxHealth = 50;
         currentHealth = maxHealth;
@@ -34,6 +40,47 @@ public class BossController : ParentController
         CheckHealth();
         CheckSurroundings();
         CheckDirection();
+        //UpdateAnimations();
+    }
+
+    //private void UpdateAnimations()
+    //{
+    //    if (!triggerOnce)
+    //    {
+    //        triggerOnce = true;
+
+    //        if (isMeleeAttaking)
+    //        {
+    //            anim.SetTrigger("Attack1");
+    //        }
+    //        if (isFireAttacking)
+    //        {
+    //            anim.SetTrigger("Attack2");
+    //        }
+
+    //    }
+
+    //}
+    public void MeleeAttack()
+    {
+        anim.SetTrigger("Attack1");
+    }
+    public void FireAttack()
+    {
+        anim.SetTrigger("Attack2");
+    }
+    public void Block()
+    {
+        anim.SetTrigger("Block");
+    }
+    public void Charge()
+    {
+
+    }
+
+    public void SetTrigger(string action)
+    {
+        anim.SetTrigger(action);
     }
 
     private void CheckHealth()
@@ -60,6 +107,18 @@ public class BossController : ParentController
         Gizmos.DrawSphere(groundCheck.position, groundCheckRadius);
     }
 
+    private void CheckDirection()
+    {
+        if (playerPos.position.x < this.transform.position.x)
+        {
+            movementDirection = -1;
+        }
+        else if (playerPos.position.x > this.transform.position.x)
+        {
+            movementDirection = 1;
+        }
+    }
+
     //Getters
     public float GetCurrentHealth()
     {
@@ -78,15 +137,8 @@ public class BossController : ParentController
         
     }
 
-    private void CheckDirection()
+    public void ResetTriggerOnce(bool b)
     {
-        if (playerPos.position.x < this.transform.position.x)
-        {
-            movementDirection = -1;
-        }
-        else if(playerPos.position.x > this.transform.position.x)
-        {
-            movementDirection = 1;
-        }
+        triggerOnce = b;
     }
 }

@@ -19,8 +19,9 @@ public class DataManagement : MonoBehaviour
     private float playerPos;
 
     private int distanceLabel;
-    
-    
+
+    private string fAction;
+    private float fMax;
 
     private bool updateOnce;
     private bool someoneAlive;
@@ -77,6 +78,7 @@ public class DataManagement : MonoBehaviour
         //REST
         pController = player.GetComponent<PlayerController>();
         pAnimController = player.GetComponent<PlayerAnimationController>();
+        bController = GetComponent<BossController>();
 
         updateOnce = false;
         someoneAlive = true;
@@ -91,7 +93,7 @@ public class DataManagement : MonoBehaviour
 
         Qtable = new Dictionary<PlayerState, BossAction>();
 
-        QtableSetUp();
+        //QtableSetUp();
         UpdateCurrentState();
 
         lastState = currentState;
@@ -101,7 +103,6 @@ public class DataManagement : MonoBehaviour
     {
         UpdateDistanceLabel();
         UpdateCurrentState();
-
         //LogPrint();
     }
 
@@ -121,17 +122,17 @@ public class DataManagement : MonoBehaviour
                 float currentMaxQvalue;
                 if(Random.Range(0,1) > epsilon)
                 {
-                    nextAction = BestAction(Qtable[currentState]);
-                    
+                    BestAction(Qtable[currentState]);
+                    nextAction = fAction;
                 }
                 else
                 {
                     nextAction = RandomAction();
                 }
-                currentMaxQvalue = maxQ;
+                currentMaxQvalue = fMax;
                 float hpBefore = pAnimController.GetCurrentHP();
 
-                //call function that activates action
+                bController.SetTrigger(nextAction);
 
                 if (pAnimController.GetCurrentHP() < hpBefore)
                 {
@@ -150,19 +151,80 @@ public class DataManagement : MonoBehaviour
                 }
                 else
                 {
-                    //this part feels weird
-                    //I need to wait and see his next action before updating the Qtable
-                    UpdateCurrentState();
-                    string a = BestAction(Qtable[currentState]);//need to make BestAction void
-                    float maxNextQvalue = maxQ;
+                    //NextBestState
+                    float nextMaxQvalue = fMax;
 
-                    newQvalue = (1 - learningRate) * currentMaxQvalue + learningRate * (stepReward + discount * maxNextQvalue);
+                    newQvalue = (1 - learningRate) * currentMaxQvalue + learningRate * (stepReward + discount * nextMaxQvalue);
                 }
                 //make an update qtable fuction
                 //Qtable[currentState].
             }
-
         }
+    }
+
+    //is it connected to the action?
+    private void NextBestState()
+    {
+        List<PlayerState> ps = new List<PlayerState>();
+
+        if (currentState.lightAttack.x == 1)
+        {
+            for(int i=0; i<6; i++)
+            {
+                PlayerState tempState = currentState;
+                tempState.lightAttack.y = 1;
+                tempState.heavyAttack.y = 0;
+                tempState.parry.y = 0;
+                tempState.dodge.y = 0;
+                tempState.defJump.y = 0;
+                tempState.offJump.y = 0;
+                if (i == 0)
+                {
+                    tempState.lightAttack.x = 1;
+                    tempState.heavyAttack.x = 0;
+                    tempState.parry.x = 0;
+                    tempState.dodge.x = 0;
+                    tempState.defJump.x = 0;
+                    tempState.offJump.x = 0;
+
+                }
+                else if(i == 1)
+                {
+                    tempState.lightAttack.x = 0;
+                    tempState.heavyAttack.x = 1;
+                    tempState.parry.x = 0;
+                    tempState.dodge.x = 0;
+                    tempState.defJump.x = 0;
+                    tempState.offJump.x = 0;
+                }
+                else if(i == 2)
+                {
+                    //tempState.offJump.x = 1
+                }
+            }
+        }
+        else if (currentState.heavyAttack.x == 1)
+        {
+            
+        }
+        else if(currentState.offJump.x == 1)
+        {
+            
+        }
+        else if(currentState.defJump.x == 1)
+        {
+            
+        }
+        else if(currentState.dodge.x == 1)
+        {
+            
+        }
+    }
+
+    //NextBestState function
+    private void NBSTATE()
+    {
+
     }
 
     private void QtableSetUp()
@@ -430,26 +492,24 @@ public class DataManagement : MonoBehaviour
         return false;
     }
 
-    private float maxQ;
-    private string BestAction(BossAction a)
+    private void BestAction(BossAction a)
     {
-        maxQ = a.block;
-        string action = "block";
-        if(maxQ < a.charge)
+        fMax = a.block;
+        fAction = "block";
+        if(fMax < a.charge)
         {
-            maxQ = a.charge;
-            action = "charge";
+            fMax = a.charge;
+            fAction = "charge";
         }
-        if(maxQ < a.fireAttack)
+        if(fMax < a.fireAttack)
         {
-            maxQ = a.fireAttack;
-            action = "fAttack";
+            fMax = a.fireAttack;
+            fAction = "fAttack";
         }
-        if(maxQ < a.meleeAttack)
+        if(fMax < a.meleeAttack)
         {
-            action = "mAttack";
+            fAction = "mAttack";
         }
-        return action;
     }
 
     private string RandomAction()

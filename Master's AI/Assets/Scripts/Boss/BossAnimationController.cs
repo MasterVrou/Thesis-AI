@@ -48,5 +48,9 @@ public class BossAnimationController : MonoBehaviour
         }
     }
 
+    private void FinishMeleeAttack()
+    {
+        bController.ResetTriggerOnce(false);
+    }
 
 }
