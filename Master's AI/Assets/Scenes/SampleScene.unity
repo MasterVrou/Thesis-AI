@@ -507,6 +507,7 @@ MonoBehaviour:
   groundCheckRadius: 0
   playerPos: {fileID: 1602761256}
   currentHealth: 0
+  chargeSpeed: 0
 --- !u!114 &550971537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1046,7 +1047,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1602761254}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 080907d22b1bcd743b1c3282e92d2206, type: 3}
   m_Name: 

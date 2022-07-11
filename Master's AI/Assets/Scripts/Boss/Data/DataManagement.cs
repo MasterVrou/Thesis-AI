@@ -13,6 +13,7 @@ public class DataManagement : MonoBehaviour
     private PlayerState lastState;
 
     private BossController bController;
+    private BossAnimationController bAnimController;
     private PlayerController pController;
     private PlayerAnimationController pAnimController;
 
@@ -20,11 +21,10 @@ public class DataManagement : MonoBehaviour
 
     private int distanceLabel;
 
-    private string fAction;
-    private float fMax;
-
+    
     private bool updateOnce;
     private bool someoneAlive;
+    private bool actionOnce;
 
     /// <summary>
     /// /////////////////////////////////Q-LEARNING VARS///////////////////////////////////////////////
@@ -47,10 +47,16 @@ public class DataManagement : MonoBehaviour
     private float winReward;
     private float stepReward;
 
+    private float fMax;
+    private float currentQ;
+    private float newQ;
+
+
     private float missPlayerPunishment;
     private float losePunishment;
-    
-    
+
+    private string fAction;
+
     //maybe add reward for walking closer to player
 
     private string nextAction;
@@ -75,13 +81,18 @@ public class DataManagement : MonoBehaviour
         learningRate = 0.1f;
         discount = 0.95f;
 
+        currentQ = 0;
+        newQ = 0;
+
         //REST
         pController = player.GetComponent<PlayerController>();
         pAnimController = player.GetComponent<PlayerAnimationController>();
         bController = GetComponent<BossController>();
+        bAnimController = GetComponent<BossAnimationController>();
 
         updateOnce = false;
         someoneAlive = true;
+        actionOnce = false;
 
         currentState.lightAttack = Vector2Int.zero;
         currentState.heavyAttack = Vector2Int.zero;
@@ -93,43 +104,41 @@ public class DataManagement : MonoBehaviour
 
         Qtable = new Dictionary<PlayerState, BossAction>();
 
-        //QtableSetUp();
+        QtableSetUp();
         UpdateCurrentState();
-
-        lastState = currentState;
     }
 
     private void Update()
     {
         UpdateDistanceLabel();
         UpdateCurrentState();
+        Training();
         //LogPrint();
     }
 
     private void Training()
     {
-        //episodes
+
         if (someoneAlive)
         {
-            //!EqualsState(currentState, lastState) will change to (if boss not in animation)
-            //steps
-            if (!EqualsState(currentState, lastState) || stepTimer < Time.time)
+            if (bAnimController.GetInAction() && !actionOnce)
             {
-                stepTimer = Time.time + stepPeriod;
-                stepCounter++;
-                Debug.Log("step: " + stepCounter);
+                actionOnce = true;
 
-                float currentMaxQvalue;
-                if(Random.Range(0,1) > epsilon)
+                BestAction(Qtable[currentState]);
+
+                if (Random.Range(0, 1) > epsilon)
                 {
-                    BestAction(Qtable[currentState]);
+                    //fAction in BestAction function
                     nextAction = fAction;
                 }
                 else
                 {
                     nextAction = RandomAction();
                 }
-                currentMaxQvalue = fMax;
+
+                UpdateCurrentQ();
+
                 float hpBefore = pAnimController.GetCurrentHP();
 
                 bController.SetTrigger(nextAction);
@@ -143,88 +152,68 @@ public class DataManagement : MonoBehaviour
                     stepReward = missPlayerPunishment;
                 }
 
-                float newQvalue;
-
-                if(pAnimController.GetCurrentHP() <= 0)
+                if (pAnimController.GetCurrentHP() <= 0)
                 {
-                    newQvalue = winReward;
+                    newQ = winReward;
                 }
                 else
                 {
-                    //NextBestState
-                    float nextMaxQvalue = fMax;
 
-                    newQvalue = (1 - learningRate) * currentMaxQvalue + learningRate * (stepReward + discount * nextMaxQvalue);
+                    //newQvalue = (1 - learningRate) * currentMaxQvalue + learningRate * (stepReward + discount * nextMaxQvalue);
+                    newQ = currentQ + learningRate * (stepReward + discount * fMax - currentQ);
                 }
-                //make an update qtable fuction
-                //Qtable[currentState].
             }
-        }
-    }
 
-    //is it connected to the action?
-    private void NextBestState()
-    {
-        List<PlayerState> ps = new List<PlayerState>();
-
-        if (currentState.lightAttack.x == 1)
-        {
-            for(int i=0; i<6; i++)
+            //if step is over
+            if(!bAnimController.GetInAction() && actionOnce)
             {
-                PlayerState tempState = currentState;
-                tempState.lightAttack.y = 1;
-                tempState.heavyAttack.y = 0;
-                tempState.parry.y = 0;
-                tempState.dodge.y = 0;
-                tempState.defJump.y = 0;
-                tempState.offJump.y = 0;
-                if (i == 0)
-                {
-                    tempState.lightAttack.x = 1;
-                    tempState.heavyAttack.x = 0;
-                    tempState.parry.x = 0;
-                    tempState.dodge.x = 0;
-                    tempState.defJump.x = 0;
-                    tempState.offJump.x = 0;
-
-                }
-                else if(i == 1)
-                {
-                    tempState.lightAttack.x = 0;
-                    tempState.heavyAttack.x = 1;
-                    tempState.parry.x = 0;
-                    tempState.dodge.x = 0;
-                    tempState.defJump.x = 0;
-                    tempState.offJump.x = 0;
-                }
-                else if(i == 2)
-                {
-                    //tempState.offJump.x = 1
-                }
+                actionOnce = false;
+                UpdateQtable();
+                stepCounter++;
+                Debug.Log("STEP " + stepCounter);
             }
-        }
-        else if (currentState.heavyAttack.x == 1)
-        {
             
         }
-        else if(currentState.offJump.x == 1)
-        {
-            
-        }
-        else if(currentState.defJump.x == 1)
-        {
-            
-        }
-        else if(currentState.dodge.x == 1)
-        {
-            
-        }
+
     }
 
-    //NextBestState function
-    private void NBSTATE()
+    private void UpdateCurrentQ()
     {
+        if (nextAction == "Block")
+        {
+            currentQ = Qtable[currentState].block;
+        }
+        else if (nextAction == "Attack1")
+        {
+            currentQ = Qtable[currentState].meleeAttack;
+        }
+        else if (nextAction == "Attack2")
+        {
+            currentQ = Qtable[currentState].fireAttack;
+        }
+        //else if
+    }
 
+    private void UpdateQtable()
+    {
+        BossAction a = Qtable[currentState];
+
+        if (nextAction == "Block")
+        {
+            a.block = newQ;
+            Qtable[currentState] = a;
+        }
+        else if (nextAction == "Attack1")
+        {
+            a.meleeAttack = newQ;
+            Qtable[currentState] = a;
+        }
+        else if (nextAction == "Attack2")
+        {
+            a.fireAttack = newQ;
+            Qtable[currentState] = a;
+        }
+        //charge
     }
 
     private void QtableSetUp()
@@ -495,20 +484,20 @@ public class DataManagement : MonoBehaviour
     private void BestAction(BossAction a)
     {
         fMax = a.block;
-        fAction = "block";
+        fAction = "Block";
         if(fMax < a.charge)
         {
             fMax = a.charge;
-            fAction = "charge";
+            fAction = "Charge";
         }
         if(fMax < a.fireAttack)
         {
             fMax = a.fireAttack;
-            fAction = "fAttack";
+            fAction = "Attack2";
         }
         if(fMax < a.meleeAttack)
         {
-            fAction = "mAttack";
+            fAction = "Attack1";
         }
     }
 
@@ -518,19 +507,19 @@ public class DataManagement : MonoBehaviour
         
         if(a == 0)
         {
-            return "block";
+            return "Block";
         }
         else if (a == 1)
         {
-            return "mAttack";
+            return "Attack1";
         }
         else if(a == 2)
         {
-            return "fAttack";
+            return "Attack2";
         }
         else
         {
-            return "charge";
+            return "Charge";
         }
     }
 
@@ -540,3 +529,136 @@ public class DataManagement : MonoBehaviour
         return distanceLabel;
     }
 }
+
+
+////is it connected to the action?
+//private void NextBestState()
+//{
+//    List<PlayerState> ps = new List<PlayerState>();
+
+//    if (currentState.lightAttack.x == 1)
+//    {
+//        for(int i=0; i<6; i++)
+//        {
+//            PlayerState tempState = currentState;
+//            tempState.lightAttack.y = 1;
+//            tempState.heavyAttack.y = 0;
+//            tempState.parry.y = 0;
+//            tempState.dodge.y = 0;
+//            tempState.defJump.y = 0;
+//            tempState.offJump.y = 0;
+//            if (i == 0)
+//            {
+//                tempState.lightAttack.x = 1;
+//                tempState.heavyAttack.x = 0;
+//                tempState.parry.x = 0;
+//                tempState.dodge.x = 0;
+//                tempState.defJump.x = 0;
+//                tempState.offJump.x = 0;
+
+//            }
+//            else if(i == 1)
+//            {
+//                tempState.lightAttack.x = 0;
+//                tempState.heavyAttack.x = 1;
+//                tempState.parry.x = 0;
+//                tempState.dodge.x = 0;
+//                tempState.defJump.x = 0;
+//                tempState.offJump.x = 0;
+//            }
+//            else if(i == 2)
+//            {
+//                //tempState.offJump.x = 1
+//            }
+//        }
+//    }
+//    else if (currentState.heavyAttack.x == 1)
+//    {
+
+//    }
+//    else if(currentState.offJump.x == 1)
+//    {
+
+//    }
+//    else if(currentState.defJump.x == 1)
+//    {
+
+//    }
+//    else if(currentState.dodge.x == 1)
+//    {
+
+//    }
+//}
+
+
+//private void Training2()
+//{
+//    //episodes
+//    if (someoneAlive)
+//    {
+//        //when animation ends, step ends
+//        if (!EqualsState(currentState, lastState) || stepTimer < Time.time)
+//        {
+//            stepTimer = Time.time + stepPeriod;
+//            stepCounter++;
+//            Debug.Log("step: " + stepCounter);
+
+//            BestAction(Qtable[currentState]);
+
+//            if (Random.Range(0,1) > epsilon)
+//            {
+//                //fAction in BestAction function
+//                nextAction = fAction;
+//            }
+//            else
+//            {
+//                nextAction = RandomAction();
+//            }
+
+//            float currentQ = 0;
+//            if (nextAction == "Block")
+//            {
+//                currentQ = Qtable[currentState].block;
+//            }
+//            else if(nextAction == "Attack1")
+//            {
+//                currentQ = Qtable[currentState].meleeAttack;
+//            }
+//            else if(nextAction == "Attack2")
+//            {
+//                currentQ = Qtable[currentState].fireAttack;
+//            }
+
+
+//            float hpBefore = pAnimController.GetCurrentHP();
+
+//            bController.SetTrigger(nextAction);
+
+//            if (pAnimController.GetCurrentHP() < hpBefore)
+//            {
+//                stepReward = hitPlayerReward;
+//            }
+//            else
+//            {
+//                stepReward = missPlayerPunishment;
+//            }
+
+//            float newQvalue;
+
+//            if(pAnimController.GetCurrentHP() <= 0)
+//            {
+//                newQvalue = winReward;
+//            }
+//            else
+//            {
+
+//                //newQvalue = (1 - learningRate) * currentMaxQvalue + learningRate * (stepReward + discount * nextMaxQvalue);
+//                newQvalue = currentQ + learningRate * (stepReward + discount * fMax - currentQ);
+//            }
+//        }
+
+
+//        //Update Qtable
+
+//    }
+//}

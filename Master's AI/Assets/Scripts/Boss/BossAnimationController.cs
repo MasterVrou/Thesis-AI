@@ -19,13 +19,39 @@ public class BossAnimationController : MonoBehaviour
     private float meleeAttackRadius;
     private float meleeAttackDamage;
 
+    private bool inAction;
+    private bool checkChargeOnce;
+
     private void Start()
     {
         bController = GetComponent<BossController>();
 
         meleeAttackDamage = 15;
+
+        inAction = false;
+        checkChargeOnce = true;
     }
 
+    private void Update()
+    {
+        CheckCharge();
+    }
+
+    private void CheckCharge()
+    {
+        if (bController.GetIsCharging())
+        {
+            inAction = true;
+            checkChargeOnce = false;
+        }
+        
+        if(!bController.GetIsCharging() && !checkChargeOnce)
+        {
+            checkChargeOnce = true;
+            inAction = false;
+        }
+    }
+    
     private void Damage(AttackDetails ad)
     {
         float hp = bController.GetCurrentHealth();
@@ -50,7 +76,37 @@ public class BossAnimationController : MonoBehaviour
 
     private void FinishMeleeAttack()
     {
-        bController.ResetTriggerOnce(false);
+        bController.ReSetTrigger("Attack1");
     }
 
+    private void FinishFireAttack()
+    {
+        bController.ReSetTrigger("Attack2");
+    }
+
+    private void FinishBlock()
+    {
+        bController.ReSetTrigger("Block");
+    }
+
+    private void FinishCharge()
+    {
+        bController.ReSetTrigger("Charge");
+    }
+
+    private void ActionStarting()
+    {
+        inAction = true;
+    }
+
+    private void ActionFinished()
+    {
+        inAction = false;
+    }
+
+    //GETTERS
+    public bool GetInAction()
+    {
+        return inAction;
+    }
 }

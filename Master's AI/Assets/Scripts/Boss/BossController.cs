@@ -11,10 +11,14 @@ public class BossController : ParentController
     private bool isMeleeAttaking;
     private bool isFireAttacking;
     private bool triggerOnce;
+    private bool isCharging;
 
     private float maxHealth;
-    public float currentHealth;
+    private float chargeStartTime;
+    private float chargeDuration;
 
+    public float currentHealth;
+    public float chargeSpeed;
 
     protected override void Start()
     {
@@ -24,13 +28,17 @@ public class BossController : ParentController
         anim = GetComponent<Animator>();
 
         isDying = false;
-        isMeleeAttaking = false;
+        isMeleeAttaking = true;
         isFireAttacking = false;
+        isCharging = false;
         triggerOnce = false;
 
         maxHealth = 50;
         currentHealth = maxHealth;
         groundCheckRadius = 0.4f;
+        chargeStartTime = 0;
+        chargeDuration = 2f;
+        chargeSpeed = 2;
     }
 
     protected override void Update()
@@ -40,47 +48,83 @@ public class BossController : ParentController
         CheckHealth();
         CheckSurroundings();
         CheckDirection();
-        //UpdateAnimations();
+        FirstAttack();
+        CheckCharge();
     }
 
-    //private void UpdateAnimations()
+
+    public void FirstAttack()
+    {
+        if (!triggerOnce)
+        {
+            triggerOnce = true;
+            Charge();
+        }
+        
+    }
+    //public void FireAttack()
     //{
-    //    if (!triggerOnce)
-    //    {
-    //        triggerOnce = true;
-
-    //        if (isMeleeAttaking)
-    //        {
-    //            anim.SetTrigger("Attack1");
-    //        }
-    //        if (isFireAttacking)
-    //        {
-    //            anim.SetTrigger("Attack2");
-    //        }
-
-    //    }
-
+    //    anim.SetTrigger("Attack2");
     //}
-    public void MeleeAttack()
-    {
-        anim.SetTrigger("Attack1");
-    }
-    public void FireAttack()
-    {
-        anim.SetTrigger("Attack2");
-    }
-    public void Block()
-    {
-        anim.SetTrigger("Block");
-    }
-    public void Charge()
-    {
+    //public void Block()
+    //{
+    //    anim.SetTrigger("Block");
+    //}
+    //public void Charge()
+    //{
+    //    anim.SetInteger("AnimState", 1);
+    //}
 
+    private void Charge()
+    {
+        chargeStartTime = Time.time;
+        anim.SetInteger("AnimState", 1);
+        isCharging = true;
+
+        if (this.transform.position.x < playerPos.position.x)
+        {
+            rb.velocity = new Vector2(chargeSpeed, rb.velocity.y);
+        }
+        else
+        {
+            rb.velocity = new Vector2(-chargeSpeed, rb.velocity.y);
+        }
+    }
+
+    private void CheckCharge()
+    {
+        if(Time.time > chargeStartTime + chargeDuration && isCharging)
+        {
+            anim.SetInteger("AnimState", 0);
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            isCharging = false;
+        }
     }
 
     public void SetTrigger(string action)
     {
-        anim.SetTrigger(action);
+        if (action == "Charge")
+        {
+            Charge();
+        }
+        else
+        {
+            anim.SetTrigger(action);
+        }
+        
+    }
+
+    public void ReSetTrigger(string action)
+    {
+        if(action == "Charge")
+        {
+            anim.SetInteger("AnimState", 0);
+        }
+        else
+        {
+            anim.ResetTrigger(action);
+        }
+        
     }
 
     private void CheckHealth()
@@ -130,6 +174,10 @@ public class BossController : ParentController
         return playerPos.position.x;
     }
 
+    public bool GetIsCharging()
+    {
+        return isCharging;
+    }
     //Setters
     public void SetCurrentHealth(float hp)
     {
