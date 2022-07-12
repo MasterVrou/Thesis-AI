@@ -48,7 +48,7 @@ public class BossController : ParentController
         CheckHealth();
         CheckSurroundings();
         CheckDirection();
-        FirstAttack();
+        //FirstAttack();
         CheckCharge();
     }
 
@@ -58,7 +58,7 @@ public class BossController : ParentController
         if (!triggerOnce)
         {
             triggerOnce = true;
-            Charge();
+            SetTrigger("Attack2");
         }
         
     }

@@ -121,7 +121,7 @@ public class DataManagement : MonoBehaviour
 
         if (someoneAlive)
         {
-            if (bAnimController.GetInAction() && !actionOnce)
+            if (!bAnimController.GetInAction() && !actionOnce)
             {
                 actionOnce = true;
 
@@ -165,7 +165,7 @@ public class DataManagement : MonoBehaviour
             }
 
             //if step is over
-            if(!bAnimController.GetInAction() && actionOnce)
+            if(bAnimController.GetInAction() && actionOnce)
             {
                 actionOnce = false;
                 UpdateQtable();
@@ -191,7 +191,10 @@ public class DataManagement : MonoBehaviour
         {
             currentQ = Qtable[currentState].fireAttack;
         }
-        //else if
+        else if(nextAction == "Charge")
+        {
+            currentQ = Qtable[currentState].charge;
+        }
     }
 
     private void UpdateQtable()
@@ -213,7 +216,11 @@ public class DataManagement : MonoBehaviour
             a.fireAttack = newQ;
             Qtable[currentState] = a;
         }
-        //charge
+        else if (nextAction == "Charge")
+        {
+            a.charge = newQ;
+            Qtable[currentState] = a;
+        }
     }
 
     private void QtableSetUp()
