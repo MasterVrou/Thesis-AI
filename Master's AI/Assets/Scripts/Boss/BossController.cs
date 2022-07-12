@@ -12,6 +12,7 @@ public class BossController : ParentController
     private bool isFireAttacking;
     private bool triggerOnce;
     private bool isCharging;
+    private bool isBlocking;
 
     private float maxHealth;
     private float chargeStartTime;
@@ -107,11 +108,15 @@ public class BossController : ParentController
         {
             Charge();
         }
+        else if (action == "Parry")
+        {
+            anim.SetTrigger(action);
+            isBlocking = true;
+        }
         else
         {
             anim.SetTrigger(action);
         }
-        
     }
 
     public void ReSetTrigger(string action)
@@ -178,6 +183,12 @@ public class BossController : ParentController
     {
         return isCharging;
     }
+
+    public bool GetIsBlocking()
+    {
+        return isBlocking;
+    }
+
     //Setters
     public void SetCurrentHealth(float hp)
     {
@@ -188,5 +199,10 @@ public class BossController : ParentController
     public void ResetTriggerOnce(bool b)
     {
         triggerOnce = b;
+    }
+
+    public void SetIsBlocking(bool b)
+    {
+        isBlocking = b;
     }
 }

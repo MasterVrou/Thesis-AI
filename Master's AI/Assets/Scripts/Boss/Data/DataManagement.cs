@@ -251,13 +251,6 @@ public class DataManagement : MonoBehaviour
 
                                     Qtable.Add(ps, ActionRandomiser());
 
-                                    //counter++;
-                                    //time += Time.deltaTime;
-                                    //if(time > 5)
-                                    //{
-                                    //    time = 0;
-                                    //    Debug.Log(counter);
-                                    //}
                                 }
                             }
                         }

@@ -56,7 +56,10 @@ public class BossAnimationController : MonoBehaviour
     {
         float hp = bController.GetCurrentHealth();
 
-        hp -= ad.damageAmount;
+        if (!bController.GetIsBlocking())
+        {
+            hp -= ad.damageAmount;
+        }
 
         bController.SetCurrentHealth(hp);
     }
@@ -87,6 +90,7 @@ public class BossAnimationController : MonoBehaviour
     private void FinishBlock()
     {
         bController.ReSetTrigger("Block");
+        bController.SetIsBlocking(false);
     }
 
     private void FinishCharge()
