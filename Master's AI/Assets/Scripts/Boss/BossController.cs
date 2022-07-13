@@ -6,6 +6,10 @@ public class BossController : ParentController
 {
     [SerializeField]
     private Transform playerPos;
+    [SerializeField]
+    private RuntimeAnimatorController MageAnimController;
+
+    private BoxCollider2D hitbox;
 
     private bool isDying;
     private bool isMeleeAttaking;
@@ -14,25 +18,30 @@ public class BossController : ParentController
     private bool isCharging;
     private bool isBlocking;
 
+    
+    
     private float maxHealth;
     private float chargeStartTime;
     private float chargeDuration;
 
     public float currentHealth;
     public float chargeSpeed;
-
+    bool once;
     protected override void Start()
     {
         base.Start();
 
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        hitbox = GetComponent<BoxCollider2D>();
 
         isDying = false;
         isMeleeAttaking = true;
         isFireAttacking = false;
         isCharging = false;
         triggerOnce = false;
+
+        once = false;
 
         maxHealth = 50;
         currentHealth = maxHealth;
@@ -51,8 +60,20 @@ public class BossController : ParentController
         CheckDirection();
         //FirstAttack();
         CheckCharge();
+
+        //UpdateOnceBossSwap();
     }
 
+    private void UpdateOnceBossSwap()
+    {
+        if (!once)
+        {
+            once = true;
+            anim.runtimeAnimatorController = MageAnimController;
+            hitbox.size = new Vector2(0.7f, 1.7f);
+            hitbox.offset = new Vector2(0, 0.1f);
+        }
+    }
 
     public void FirstAttack()
     {
@@ -63,18 +84,6 @@ public class BossController : ParentController
         }
         
     }
-    //public void FireAttack()
-    //{
-    //    anim.SetTrigger("Attack2");
-    //}
-    //public void Block()
-    //{
-    //    anim.SetTrigger("Block");
-    //}
-    //public void Charge()
-    //{
-    //    anim.SetInteger("AnimState", 1);
-    //}
 
     private void Charge()
     {

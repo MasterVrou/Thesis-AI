@@ -397,7 +397,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.09100154, y: 0.71314496}
+  m_Offset: {x: 0.1, y: 0.71314496}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -408,7 +408,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.7994066, y: 1.2729608}
+  m_Size: {x: 0.79, y: 1.2729608}
   m_EdgeRadius: 0
 --- !u!50 &550971532
 Rigidbody2D:
@@ -490,7 +490,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550971530}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.93, y: 0, z: 0}
+  m_LocalPosition: {x: -5.08, y: -1.07, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_Children:
   - {fileID: 613716959}
@@ -536,6 +536,7 @@ MonoBehaviour:
   movementSpeed: 0
   groundCheckRadius: 0
   playerPos: {fileID: 1602761256}
+  MageAnimController: {fileID: 9100000, guid: d94928291c33c5d43ba605008a357653, type: 2}
   currentHealth: 0
   chargeSpeed: 0
 --- !u!114 &550971537
@@ -608,6 +609,7 @@ GameObject:
   - component: {fileID: 934698805}
   - component: {fileID: 934698804}
   - component: {fileID: 934698803}
+  - component: {fileID: 934698806}
   m_Layer: 0
   m_Name: Mage
   m_TagString: Untagged
@@ -693,12 +695,38 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934698802}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.071638, y: 3.4720492, z: -4.595527}
+  m_LocalPosition: {x: -7.19, y: 3.5, z: -4.595527}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &934698806
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934698802}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0157485, y: -0.26880944}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 4.6875, y: 4.6875}
+    newSize: {x: 4.6875, y: 4.6875}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.78188705, y: 1.8821061}
+  m_EdgeRadius: 0
 --- !u!1 &1185332184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1179,7 +1207,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1602761254}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 080907d22b1bcd743b1c3282e92d2206, type: 3}
   m_Name: 
