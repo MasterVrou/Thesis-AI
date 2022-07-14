@@ -8,21 +8,32 @@ public class BossController : ParentController
     private Transform playerPos;
     [SerializeField]
     private RuntimeAnimatorController MageAnimController;
+    [SerializeField]
+    private GameObject fireball;
+    [SerializeField]
+    private LayerMask whatIsPlayer;
+
+    private GameObject firePillar;
+
+    private Projectile projectileScript;
 
     private BoxCollider2D hitbox;
 
+    
+    
     private bool isDying;
     private bool isMeleeAttaking;
     private bool isFireAttacking;
     private bool triggerOnce;
     private bool isCharging;
     private bool isBlocking;
-
+    private bool damageOnce;
     
     
     private float maxHealth;
     private float chargeStartTime;
     private float chargeDuration;
+    private float fireballSpeed = 13f;
 
     public float currentHealth;
     public float chargeSpeed;
@@ -42,13 +53,18 @@ public class BossController : ParentController
         triggerOnce = false;
 
         once = false;
+        damageOnce = false;
 
-        maxHealth = 50;
+        maxHealth = 200;
         currentHealth = maxHealth;
         groundCheckRadius = 0.4f;
         chargeStartTime = 0;
         chargeDuration = 2f;
         chargeSpeed = 2;
+        fireballSpeed = 13;
+
+        firePillar = transform.Find("FirePillar").gameObject;
+        firePillar.SetActive(false);
     }
 
     protected override void Update()
@@ -59,9 +75,49 @@ public class BossController : ParentController
         CheckSurroundings();
         CheckDirection();
         //FirstAttack();
-        CheckCharge();
-
+        UpdatePillarPos();
         //UpdateOnceBossSwap();
+        //Fireball();
+        FirePillar();
+
+    }
+
+    private void FixedUpdate()
+    {
+        CheckCharge();
+    }
+
+    private void UpdatePillarPos()
+    {
+        firePillar.transform.position = new Vector3(playerPos.position.x, -1, playerPos.position.z);
+    }
+
+    private void FirePillar()
+    {
+        firePillar.SetActive(true);
+        if (!damageOnce)
+        {
+            damageOnce = true;
+            Vector2 point = new Vector2(firePillar.transform.position.x, firePillar.transform.position.y);
+            Vector2 size = new Vector2(2.3f, 0.7f);
+
+            Collider2D pillarHit = Physics2D.OverlapBox(point, size, 90, whatIsPlayer);
+
+            if(pillarHit)
+            {
+                AttackDetails a;
+                a.damageAmount = 20;
+                a.position = firePillar.transform.position;
+                pillarHit.transform.SendMessage("Damage", a);
+            }
+        }
+    }
+
+    
+
+    private void Fireball()
+    {
+        Instantiate(fireball, transform.position, Quaternion.identity);
     }
 
     private void UpdateOnceBossSwap()

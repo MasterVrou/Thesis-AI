@@ -104,7 +104,7 @@ public class DataManagement : MonoBehaviour
 
         Qtable = new Dictionary<PlayerState, BossAction>();
 
-        QtableSetUp();
+        //QtableSetUp();
         UpdateCurrentState();
     }
 
@@ -112,7 +112,7 @@ public class DataManagement : MonoBehaviour
     {
         UpdateDistanceLabel();
         UpdateCurrentState();
-        Training();
+        //Training();
         //LogPrint();
     }
 
