@@ -112,7 +112,7 @@ public class DataManagement : MonoBehaviour
     {
         UpdateDistanceLabel();
         UpdateCurrentState();
-        //Training();
+        Training();
         //LogPrint();
     }
 

@@ -13,7 +13,9 @@ public class BossController : ParentController
     [SerializeField]
     private LayerMask whatIsPlayer;
 
-    private GameObject firePillar;
+    private GameObject parentFirePillar;
+    private GameObject pillarWarning;
+    private GameObject pillar;
 
     private Projectile projectileScript;
 
@@ -28,16 +30,22 @@ public class BossController : ParentController
     private bool isCharging;
     private bool isBlocking;
     private bool damageOnce;
-    
+    private bool isFirePillaring;
+    private bool pillarTriggered;
     
     private float maxHealth;
     private float chargeStartTime;
     private float chargeDuration;
     private float fireballSpeed = 13f;
+    private float firePillarStartTime;
+    private float firePillarHitTime;
+    private float pillarTriggeredStartTime;
+    private float pillarTriggeredDuration;
 
     public float currentHealth;
     public float chargeSpeed;
     bool once;
+
     protected override void Start()
     {
         base.Start();
@@ -51,6 +59,8 @@ public class BossController : ParentController
         isFireAttacking = false;
         isCharging = false;
         triggerOnce = false;
+        isFirePillaring = false;
+        pillarTriggered = false;
 
         once = false;
         damageOnce = false;
@@ -62,9 +72,16 @@ public class BossController : ParentController
         chargeDuration = 2f;
         chargeSpeed = 2;
         fireballSpeed = 13;
+        firePillarHitTime = 1;
+        pillarTriggeredDuration = 1;
 
-        firePillar = transform.Find("FirePillar").gameObject;
-        firePillar.SetActive(false);
+        parentFirePillar = transform.Find("FirePillar").gameObject;
+        pillarWarning = parentFirePillar.transform.FindChild("Warning").gameObject;
+        pillar = parentFirePillar.transform.FindChild("Pillar").gameObject;
+        pillarWarning.SetActive(false);
+        pillar.SetActive(false);
+
+        parentFirePillar.transform.position = new Vector3(playerPos.position.x, -1, playerPos.position.z);
     }
 
     protected override void Update()
@@ -79,7 +96,7 @@ public class BossController : ParentController
         //UpdateOnceBossSwap();
         //Fireball();
         FirePillar();
-
+        CheckFirePillar();
     }
 
     private void FixedUpdate()
@@ -89,31 +106,73 @@ public class BossController : ParentController
 
     private void UpdatePillarPos()
     {
-        firePillar.transform.position = new Vector3(playerPos.position.x, -1, playerPos.position.z);
+        //parentFirePillar.transform.position = new Vector3(playerPos.position.x, -1, playerPos.position.z);
+
+        //if (pillarTriggered && pillarTriggeredStartTime + pillarTriggeredDuration < Time.time)
+        //{
+        //    damageOnce = false;
+        //    isFirePillaring = false;
+        //    pillarTriggered = false;
+        //    pillarWarning.SetActive(false);
+        //    pillar.SetActive(false);
+        //}
+        if (!isFirePillaring)
+        {
+            parentFirePillar.transform.position = new Vector3(playerPos.position.x, -1, playerPos.position.z);
+        }
+        else
+        {
+            if (pillarTriggered && pillarTriggeredStartTime + pillarTriggeredDuration < Time.time)
+            {
+                damageOnce = false;
+                isFirePillaring = false;
+                pillarTriggered = false;
+                pillarWarning.SetActive(false);
+                pillar.SetActive(false);
+            }
+        }
+
     }
 
     private void FirePillar()
     {
-        firePillar.SetActive(true);
-        if (!damageOnce)
+        if (!isFirePillaring)
         {
-            damageOnce = true;
-            Vector2 point = new Vector2(firePillar.transform.position.x, firePillar.transform.position.y);
-            Vector2 size = new Vector2(2.3f, 0.7f);
-
-            Collider2D pillarHit = Physics2D.OverlapBox(point, size, 90, whatIsPlayer);
-
-            if(pillarHit)
-            {
-                AttackDetails a;
-                a.damageAmount = 20;
-                a.position = firePillar.transform.position;
-                pillarHit.transform.SendMessage("Damage", a);
-            }
+            isFirePillaring = true;
+            firePillarStartTime = Time.time;
+            pillarWarning.SetActive(true);
         }
     }
 
-    
+    private void CheckFirePillar()
+    {
+        if(isFirePillaring && firePillarStartTime + firePillarHitTime < Time.time)
+        {
+            pillar.SetActive(true);
+            pillarTriggered = true;
+
+            if (!damageOnce)
+            {
+                pillarTriggeredStartTime = Time.time;
+
+                damageOnce = true;
+                Vector2 point = new Vector2(parentFirePillar.transform.position.x, parentFirePillar.transform.position.y);
+                Vector2 size = new Vector2(2.3f, 0.7f);
+
+                Collider2D pillarHit = Physics2D.OverlapBox(point, size, 90, whatIsPlayer);
+
+                if (pillarHit)
+                {
+                    AttackDetails a;
+                    a.damageAmount = 20;
+                    a.position = parentFirePillar.transform.position;
+                    pillarHit.transform.SendMessage("Damage", a);
+                }
+            }
+        }
+
+
+    }
 
     private void Fireball()
     {
