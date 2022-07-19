@@ -619,6 +619,7 @@ MonoBehaviour:
   movementSpeed: 0
   groundCheckRadius: 0
   playerPos: {fileID: 1602761256}
+  platPos: {fileID: 1185332186}
   MageAnimController: {fileID: 9100000, guid: d94928291c33c5d43ba605008a357653, type: 2}
   KnightController: {fileID: 9100000, guid: a38a4f6dcc9fa7146842d0a36621bd43, type: 2}
   fireball: {fileID: 2955214612469194452, guid: 17050ad63f828cc478e8958244edb502, type: 3}
@@ -1034,7 +1035,7 @@ Transform:
   m_GameObject: {fileID: 1185332184}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -2.97, z: 0}
-  m_LocalScale: {x: 42.45, y: 1, z: 1}
+  m_LocalScale: {x: 92.82, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2

@@ -7,6 +7,8 @@ public class BossController : ParentController
     [SerializeField]
     private Transform playerPos;
     [SerializeField]
+    private Transform platPos;
+    [SerializeField]
     private RuntimeAnimatorController MageAnimController;
     [SerializeField]
     private RuntimeAnimatorController KnightController;
@@ -35,6 +37,7 @@ public class BossController : ParentController
     private bool isFirePillaring;
     private bool pillarTriggered;
     private bool isFireBalling;
+    private bool isDelayed;
     
     private float maxHealth;
     private float chargeStartTime;
@@ -46,6 +49,8 @@ public class BossController : ParentController
     private float pillarTriggeredDuration;
     private float fireballStartTime;
     private float fireballDuration;
+    private float chargeDelayStartTime;
+    private float chargeDelayDuration;
 
     public float currentHealth;
     public float chargeSpeed;
@@ -67,24 +72,26 @@ public class BossController : ParentController
         isFirePillaring = false;
         pillarTriggered = false;
         isFireBalling = false;
+        isDelayed = false;
 
         once = false;
         damageOnce = false;
 
-        maxHealth = 200;
+        maxHealth = 20000;
         currentHealth = maxHealth;
         groundCheckRadius = 0.4f;
         chargeStartTime = 0;
-        chargeDuration = 2f;
+        chargeDuration = 0.7f;
         chargeSpeed = 2;
         fireballSpeed = 13;
         firePillarHitTime = 1;
         pillarTriggeredDuration = 1;
         fireballDuration = 1;
+        chargeDelayDuration = 0.3f;
 
         parentFirePillar = transform.Find("FirePillar").gameObject;
-        pillarWarning = parentFirePillar.transform.FindChild("Warning").gameObject;
-        pillar = parentFirePillar.transform.FindChild("Pillar").gameObject;
+        pillarWarning = parentFirePillar.transform.Find("Warning").gameObject;
+        pillar = parentFirePillar.transform.Find("Pillar").gameObject;
         pillarWarning.SetActive(false);
         pillar.SetActive(false);
 
@@ -98,13 +105,11 @@ public class BossController : ParentController
         CheckHealth();
         CheckSurroundings();
         CheckDirection();
-        //FirstAttack();
         UpdatePillarPos();
-        //BossSwap();
-        //Fireball();
-        //FirePillar();
         CheckFirePillar();
         CheckFireball();
+        //FirePillar();
+        CheckDelay();
     }
 
     private void FixedUpdate()
@@ -112,21 +117,25 @@ public class BossController : ParentController
         CheckCharge();
     }
 
+    private void ChargeDelay()
+    {
+        chargeDelayStartTime = Time.time;
+        isDelayed = true;
+    }
+
+    private void CheckDelay()
+    {
+        if(chargeDelayStartTime + chargeDelayDuration < Time.time)
+        {
+            isDelayed = false;
+        }
+    }
+
     private void UpdatePillarPos()
     {
-        //parentFirePillar.transform.position = new Vector3(playerPos.position.x, -1, playerPos.position.z);
-
-        //if (pillarTriggered && pillarTriggeredStartTime + pillarTriggeredDuration < Time.time)
-        //{
-        //    damageOnce = false;
-        //    isFirePillaring = false;
-        //    pillarTriggered = false;
-        //    pillarWarning.SetActive(false);
-        //    pillar.SetActive(false);
-        //}
         if (!isFirePillaring)
         {
-            parentFirePillar.transform.position = new Vector2(playerPos.position.x, -1);
+            parentFirePillar.transform.position = new Vector2(playerPos.position.x, platPos.position.y+1);
         }
         else
         {
@@ -231,21 +240,31 @@ public class BossController : ParentController
 
         if (this.transform.position.x < playerPos.position.x)
         {
-            rb.velocity = new Vector2(chargeSpeed, rb.velocity.y);
+            chargeSpeed = 10;
         }
         else
         {
-            rb.velocity = new Vector2(-chargeSpeed, rb.velocity.y);
+            chargeSpeed = -10;
         }
+
+        ChargeDelay();
     }
 
     private void CheckCharge()
     {
-        if(Time.time > chargeStartTime + chargeDuration && isCharging)
+        if (!isDelayed)
         {
-            anim.SetInteger("AnimState", 0);
-            rb.velocity = new Vector2(0, rb.velocity.y);
-            isCharging = false;
+            if (isCharging)
+            {
+                rb.velocity = new Vector2(chargeSpeed, rb.velocity.y);
+            }
+
+            if (Time.time > chargeStartTime + chargeDuration && isCharging)
+            {
+                anim.SetInteger("AnimState", 0);
+                rb.velocity = new Vector2(0, rb.velocity.y);
+                isCharging = false;
+            }
         }
     }
 
