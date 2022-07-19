@@ -9,6 +9,8 @@ public class BossController : ParentController
     [SerializeField]
     private RuntimeAnimatorController MageAnimController;
     [SerializeField]
+    private RuntimeAnimatorController KnightController;
+    [SerializeField]
     private GameObject fireball;
     [SerializeField]
     private LayerMask whatIsPlayer;
@@ -32,6 +34,7 @@ public class BossController : ParentController
     private bool damageOnce;
     private bool isFirePillaring;
     private bool pillarTriggered;
+    private bool isFireBalling;
     
     private float maxHealth;
     private float chargeStartTime;
@@ -41,6 +44,8 @@ public class BossController : ParentController
     private float firePillarHitTime;
     private float pillarTriggeredStartTime;
     private float pillarTriggeredDuration;
+    private float fireballStartTime;
+    private float fireballDuration;
 
     public float currentHealth;
     public float chargeSpeed;
@@ -61,6 +66,7 @@ public class BossController : ParentController
         triggerOnce = false;
         isFirePillaring = false;
         pillarTriggered = false;
+        isFireBalling = false;
 
         once = false;
         damageOnce = false;
@@ -74,6 +80,7 @@ public class BossController : ParentController
         fireballSpeed = 13;
         firePillarHitTime = 1;
         pillarTriggeredDuration = 1;
+        fireballDuration = 1;
 
         parentFirePillar = transform.Find("FirePillar").gameObject;
         pillarWarning = parentFirePillar.transform.FindChild("Warning").gameObject;
@@ -93,10 +100,11 @@ public class BossController : ParentController
         CheckDirection();
         //FirstAttack();
         UpdatePillarPos();
-        //UpdateOnceBossSwap();
+        //BossSwap();
         //Fireball();
-        FirePillar();
+        //FirePillar();
         CheckFirePillar();
+        CheckFireball();
     }
 
     private void FixedUpdate()
@@ -118,7 +126,7 @@ public class BossController : ParentController
         //}
         if (!isFirePillaring)
         {
-            parentFirePillar.transform.position = new Vector3(playerPos.position.x, -1, playerPos.position.z);
+            parentFirePillar.transform.position = new Vector2(playerPos.position.x, -1);
         }
         else
         {
@@ -141,6 +149,7 @@ public class BossController : ParentController
             isFirePillaring = true;
             firePillarStartTime = Time.time;
             pillarWarning.SetActive(true);
+            
         }
     }
 
@@ -177,16 +186,30 @@ public class BossController : ParentController
     private void Fireball()
     {
         Instantiate(fireball, transform.position, Quaternion.identity);
+        fireballStartTime = Time.time;
+        isFireBalling = true;
     }
 
-    private void UpdateOnceBossSwap()
+    private void CheckFireball()
     {
-        if (!once)
+        if(fireballStartTime + fireballDuration < Time.time)
         {
-            once = true;
+            isFireBalling = false;
+        }
+    }
+    public void BossSwap(string boss)
+    {
+        if(boss == "Mage")
+        {
             anim.runtimeAnimatorController = MageAnimController;
             hitbox.size = new Vector2(0.7f, 1.7f);
             hitbox.offset = new Vector2(0, 0.1f);
+        }
+        else if(boss == "Knight")
+        {
+            anim.runtimeAnimatorController = KnightController;
+            hitbox.size = new Vector2(0.79f, 1.27f);
+            hitbox.offset = new Vector2(0.1f, 0.71f);
         }
     }
 
@@ -195,7 +218,7 @@ public class BossController : ParentController
         if (!triggerOnce)
         {
             triggerOnce = true;
-            SetTrigger("Attack2");
+            SetKnightAction("Attack2");
         }
         
     }
@@ -226,7 +249,19 @@ public class BossController : ParentController
         }
     }
 
-    public void SetTrigger(string action)
+    public void SetMageAction(string action)
+    {
+        if(action == "Firepillar")
+        {
+            FirePillar();
+        }
+        else if(action == "Fireball")
+        {
+            Fireball();
+        }
+    }
+
+    public void SetKnightAction(string action)
     {
         if (action == "Charge")
         {
@@ -313,6 +348,19 @@ public class BossController : ParentController
         return isBlocking;
     }
 
+    public bool GetIsFirepillaring()
+    {
+        return isFirePillaring;
+    }
+    public bool GetIsFireballing()
+    {
+        return isFireBalling;
+    }
+
+    public bool GetIsFireBalling()
+    {
+        return isFireBalling;
+    }
     //Setters
     public void SetCurrentHealth(float hp)
     {

@@ -21,11 +21,11 @@ public class DataManagement : MonoBehaviour
 
     private int distanceLabel;
 
-    
     private bool updateOnce;
     private bool someoneAlive;
     private bool actionOnce;
 
+    private string boss;
     /// <summary>
     /// /////////////////////////////////Q-LEARNING VARS///////////////////////////////////////////////
     /// </summary>
@@ -63,6 +63,8 @@ public class DataManagement : MonoBehaviour
 
     private void Start()
     {
+        boss = "Knight";
+
         //Qlearning
         stepCounter = 0;
         episodeCounter = 0;
@@ -104,7 +106,7 @@ public class DataManagement : MonoBehaviour
 
         Qtable = new Dictionary<PlayerState, BossAction>();
 
-        //QtableSetUp();
+        QtableSetUp();
         UpdateCurrentState();
     }
 
@@ -136,12 +138,19 @@ public class DataManagement : MonoBehaviour
                 {
                     nextAction = RandomAction();
                 }
-
                 UpdateCurrentQ();
 
                 float hpBefore = pAnimController.GetCurrentHP();
 
-                bController.SetTrigger(nextAction);
+                UpdateBossForm();
+                if(boss == "Knight")
+                {
+                    bController.SetKnightAction(nextAction);
+                }
+                else if(boss == "Mage")
+                {
+                    bController.SetMageAction(nextAction);
+                }
 
                 if (pAnimController.GetCurrentHP() < hpBefore)
                 {
@@ -221,6 +230,30 @@ public class DataManagement : MonoBehaviour
             a.charge = newQ;
             Qtable[currentState] = a;
         }
+        else if(nextAction == "Fireball")
+        {
+            a.fireball = newQ;
+            Qtable[currentState] = a;
+        }
+        else if(nextAction == "Firepillar")
+        {
+            a.firepillar = newQ;
+            Qtable[currentState] = a;
+        }
+    }
+
+    private void UpdateBossForm()
+    {
+        if (boss != "Knight" && (nextAction == "Attack1" || nextAction == "Attack2" || nextAction == "Charge" || nextAction == "Block"))
+        {
+            bController.BossSwap("Knight");
+            boss = "Knight";
+        }
+        else if (boss != "Mage" && (nextAction == "Firepillar" || nextAction == "Fireball"))
+        {
+            bController.BossSwap("Mage");
+            boss = "Mage";
+        }
     }
 
     private void QtableSetUp()
@@ -268,6 +301,8 @@ public class DataManagement : MonoBehaviour
         a.charge = Random.Range(-5, 5);
         a.fireAttack = Random.Range(-5, 5);
         a.meleeAttack = Random.Range(-5, 5);
+        a.fireball = Random.Range(-5, 5);
+        a.firepillar = Random.Range(-5, 5);
 
         return a;
     }
@@ -499,11 +534,19 @@ public class DataManagement : MonoBehaviour
         {
             fAction = "Attack1";
         }
+        if(fMax < a.fireball)
+        {
+            fAction = "Fireball";
+        }
+        if(fMax < a.firepillar)
+        {
+            fAction = "Firepillar";
+        }
     }
 
     private string RandomAction()
     {
-        int a = Random.Range(0, 4);
+        int a = Random.Range(0, 6);
         
         if(a == 0)
         {
@@ -517,9 +560,17 @@ public class DataManagement : MonoBehaviour
         {
             return "Attack2";
         }
-        else
+        else if(a == 3)
         {
             return "Charge";
+        }
+        else if(a == 4)
+        {
+            return "Fireball";
+        }
+        else
+        {
+            return "Firepillar";
         }
     }
 

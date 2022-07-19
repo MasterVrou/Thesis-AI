@@ -21,6 +21,8 @@ public class BossAnimationController : MonoBehaviour
 
     private bool inAction;
     private bool checkChargeOnce;
+    private bool checkPillarOnce;
+    private bool checkFireballOnce;
 
     private void Start()
     {
@@ -30,11 +32,42 @@ public class BossAnimationController : MonoBehaviour
 
         inAction = false;
         checkChargeOnce = true;
+        checkPillarOnce = true;
+        checkFireballOnce = true;
     }
 
     private void Update()
     {
         CheckCharge();
+        CheckFirePillar();
+        CheckFireball();
+    }
+
+    private void CheckFirePillar()
+    {
+        if (bController.GetIsFirepillaring())
+        {
+            inAction = true;
+            checkPillarOnce = false;
+        }
+        else if(!bController.GetIsFirepillaring() && !checkPillarOnce)
+        {
+            checkPillarOnce = true;
+            inAction = false;
+        }
+    }
+    private void CheckFireball()
+    {
+        if (bController.GetIsFireballing())
+        {
+            inAction = true;
+            checkFireballOnce = false;
+        }
+        else if(!bController.GetIsFireballing() && !checkFireballOnce)
+        {
+            checkFireballOnce = true;
+            inAction = false;
+        }
     }
 
     private void CheckCharge()
@@ -113,4 +146,6 @@ public class BossAnimationController : MonoBehaviour
     {
         return inAction;
     }
+
+    
 }

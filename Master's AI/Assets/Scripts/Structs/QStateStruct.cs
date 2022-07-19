@@ -23,4 +23,6 @@ public struct BossAction
     public float fireAttack;//undodgeable
     public float block;
     public float charge;//unblockable
+    public float firepillar;
+    public float fireball;
 }
