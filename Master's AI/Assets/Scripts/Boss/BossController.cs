@@ -38,6 +38,7 @@ public class BossController : ParentController
     private bool pillarTriggered;
     private bool isFireBalling;
     private bool isDelayed;
+    private bool chargeDamageOnce;
     
     private float maxHealth;
     private float chargeStartTime;
@@ -76,18 +77,19 @@ public class BossController : ParentController
 
         once = false;
         damageOnce = false;
+        chargeDamageOnce = false;
 
         maxHealth = 120;
         currentHealth = maxHealth;
         groundCheckRadius = 0.4f;
         chargeStartTime = 0;
-        chargeDuration = 0.7f;
+        chargeDuration = 1.2f;
         chargeSpeed = 2;
         fireballSpeed = 13;
         firePillarHitTime = 1;
         pillarTriggeredDuration = 1;
         fireballDuration = 1;
-        chargeDelayDuration = 0.3f;
+        chargeDelayDuration = 0.7f;
 
         parentFirePillar = transform.Find("FirePillar").gameObject;
         pillarWarning = parentFirePillar.transform.Find("Warning").gameObject;
@@ -257,6 +259,23 @@ public class BossController : ParentController
             if (isCharging)
             {
                 rb.velocity = new Vector2(chargeSpeed, rb.velocity.y);
+                
+                if (!chargeDamageOnce)
+                {
+                    Vector2 point = new Vector2(transform.position.x, transform.position.y);
+                    Vector2 size = new Vector2(0.79f, 1.2f);
+
+                    Collider2D chargeHit = Physics2D.OverlapBox(point, size, 90, whatIsPlayer);
+
+                    if (chargeHit)
+                    {
+                        AttackDetails a;
+                        a.damageAmount = 20;
+                        a.position = transform.position;
+                        chargeHit.transform.SendMessage("Damage", a);
+                        chargeDamageOnce = true;
+                    }
+                }
             }
 
             if (Time.time > chargeStartTime + chargeDuration && isCharging)
@@ -264,6 +283,7 @@ public class BossController : ParentController
                 anim.SetInteger("AnimState", 0);
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 isCharging = false;
+                chargeDamageOnce = false;
             }
         }
     }

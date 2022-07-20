@@ -125,6 +125,11 @@ public class PlayerCombat : MonoBehaviour
         return isShielded;
     }
 
+    public bool GetIsAttacking()
+    {
+        return isAttacking;
+    }
+
     //Setters
     public void SetIsAttacking(bool b)
     {

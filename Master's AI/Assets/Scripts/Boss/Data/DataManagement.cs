@@ -49,12 +49,13 @@ public class DataManagement : MonoBehaviour
     private float blockPlayerReward;
     private float winReward;
     private float stepReward;
+    private float goodBlockReward;
 
     private float fMax;
     private float currentQ;
     private float newQ;
 
-
+    private float missBlockPunishment;
     private float missPlayerPunishment;
     private float losePunishment;
 
@@ -79,8 +80,10 @@ public class DataManagement : MonoBehaviour
 
         hitPlayerReward = 10;
         blockPlayerReward = 10;
+        goodBlockReward = 20;
         winReward = 100;
         missPlayerPunishment = -10;
+        missBlockPunishment = -5;
         losePunishment = -100;
 
         epsilon = 0.8f;
@@ -159,14 +162,29 @@ public class DataManagement : MonoBehaviour
                     bController.SetMageAction(nextAction);
                 }
 
-                if (pAnimController.GetCurrentHP() < hpBefore)
+                if(nextAction == "Block")
                 {
-                    stepReward = hitPlayerReward;
+                    if (bAnimController.GetDamageBlocked())
+                    {
+                        stepReward = goodBlockReward;
+                    }
+                    else
+                    {
+                        stepReward = missBlockPunishment;
+                    }
                 }
                 else
                 {
-                    stepReward = missPlayerPunishment;
+                    if (pAnimController.GetCurrentHP() < hpBefore)
+                    {
+                        stepReward = hitPlayerReward;
+                    }
+                    else
+                    {
+                        stepReward = missPlayerPunishment;
+                    }
                 }
+                
 
                 if (pAnimController.GetCurrentHP() <= 0)
                 {

@@ -28,6 +28,7 @@ public class BossAnimationController : MonoBehaviour
     private bool checkChargeOnce;
     private bool checkPillarOnce;
     private bool checkFireballOnce;
+    private bool damageBlocked;
 
     private void Start()
     {
@@ -99,6 +100,10 @@ public class BossAnimationController : MonoBehaviour
         {
             hp -= ad.damageAmount;
         }
+        else
+        {
+            damageBlocked = true;
+        }
 
         bController.SetCurrentHealth(hp);
     }
@@ -164,6 +169,17 @@ public class BossAnimationController : MonoBehaviour
     public bool GetInAction()
     {
         return inAction;
+    }
+
+    public bool GetDamageBlocked()
+    {
+        return damageBlocked;
+    }
+
+    //SETTERS
+    public void SetDamageBlocked(bool b)
+    {
+        damageBlocked = b;
     }
 
     private void OnDrawGizmos()
