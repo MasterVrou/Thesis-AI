@@ -6,6 +6,8 @@ public class BossAnimationController : MonoBehaviour
 {
     [SerializeField]
     private Transform meleeAttackHitBoxPos;
+    [SerializeField]
+    private Transform fireAttackHitBoxPos;
 
     [SerializeField]
     private LayerMask whatIsPlayer;
@@ -16,8 +18,11 @@ public class BossAnimationController : MonoBehaviour
 
     private AttackDetails attackDetails;
 
-    private float meleeAttackRadius;
+    public float meleeAttackRadius = 0.15f;
+    public float fireAttackRadius = 0.15f;
     private float meleeAttackDamage;
+    private float fireAttackDamage;
+
 
     private bool inAction;
     private bool checkChargeOnce;
@@ -29,6 +34,7 @@ public class BossAnimationController : MonoBehaviour
         bController = GetComponent<BossController>();
 
         meleeAttackDamage = 15;
+        fireAttackDamage = 20;
 
         inAction = false;
         checkChargeOnce = true;
@@ -110,6 +116,19 @@ public class BossAnimationController : MonoBehaviour
         }
     }
 
+    private void CheckFireAttackHitBox()
+    {
+        Collider2D[] detectedObjects = Physics2D.OverlapCircleAll(fireAttackHitBoxPos.position, fireAttackRadius, whatIsPlayer);
+
+        attackDetails.damageAmount = fireAttackDamage;
+        attackDetails.position = transform.position;
+
+        foreach (Collider2D collider in detectedObjects)
+        {
+            collider.transform.SendMessage("Damage", attackDetails);
+        }
+    }
+
     private void FinishMeleeAttack()
     {
         bController.ReSetTrigger("Attack1");
@@ -147,5 +166,9 @@ public class BossAnimationController : MonoBehaviour
         return inAction;
     }
 
-    
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(meleeAttackHitBoxPos.position, meleeAttackRadius);
+        Gizmos.DrawSphere(fireAttackHitBoxPos.position, fireAttackRadius);
+    }
 }

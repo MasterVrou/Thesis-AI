@@ -23,6 +23,8 @@ public class DataManagement : MonoBehaviour
 
     private bool updateOnce;
     private bool someoneAlive;
+    private bool bossDied;
+    private bool playerDied;
     private bool actionOnce;
 
     private string boss;
@@ -33,6 +35,7 @@ public class DataManagement : MonoBehaviour
     private int totalSteps;
     private int stepCounter;
     private int episodeCounter;
+    private float episodeReward;
 
     private float stepTimer;
     private float stepPeriod;
@@ -68,6 +71,7 @@ public class DataManagement : MonoBehaviour
         //Qlearning
         stepCounter = 0;
         episodeCounter = 0;
+        episodeReward = 0;
         totalEpisodes = 100;
         totalSteps = 100;
         stepTimer = 0;
@@ -77,6 +81,7 @@ public class DataManagement : MonoBehaviour
         blockPlayerReward = 10;
         winReward = 100;
         missPlayerPunishment = -10;
+        losePunishment = -100;
 
         epsilon = 0.8f;
         epsilonDecay = 0.9998f;
@@ -95,6 +100,8 @@ public class DataManagement : MonoBehaviour
         updateOnce = false;
         someoneAlive = true;
         actionOnce = false;
+        bossDied = false;
+        playerDied = false;
 
         currentState.lightAttack = Vector2Int.zero;
         currentState.heavyAttack = Vector2Int.zero;
@@ -121,7 +128,7 @@ public class DataManagement : MonoBehaviour
     private void Training()
     {
 
-        if (someoneAlive)
+        if (!bossDied && !playerDied)
         {
             if (!bAnimController.GetInAction() && !actionOnce)
             {
@@ -164,6 +171,12 @@ public class DataManagement : MonoBehaviour
                 if (pAnimController.GetCurrentHP() <= 0)
                 {
                     newQ = winReward;
+                    playerDied = true;
+                }
+                if(bController.GetCurrentHealth() <= 0)
+                {
+                    newQ = losePunishment;
+                    bossDied = true;
                 }
                 else
                 {
@@ -171,11 +184,14 @@ public class DataManagement : MonoBehaviour
                     //newQvalue = (1 - learningRate) * currentMaxQvalue + learningRate * (stepReward + discount * nextMaxQvalue);
                     newQ = currentQ + learningRate * (stepReward + discount * fMax - currentQ);
                 }
+
+                
             }
 
             //if step is over
             if(bAnimController.GetInAction() && actionOnce)
             {
+                episodeReward += newQ;
                 actionOnce = false;
                 UpdateQtable();
                 stepCounter++;
@@ -183,7 +199,21 @@ public class DataManagement : MonoBehaviour
             }
             
         }
-
+        else
+        {
+            epsilon *= epsilonDecay;
+            //add to the total reward
+            bossDied = false;
+            playerDied = false;
+            bController.Respawn();
+            pAnimController.Respawn();
+            episodeCounter++;
+            Debug.Log("EPISODE NUMBER: " + episodeCounter + "\n" +
+                      "EPISODE REWARD: " + episodeReward + "\n" +
+                      "EPSILON: " + epsilon);
+            //maybe keep all the episode rewards in a list
+            episodeReward = 0;
+        }
     }
 
     private void UpdateCurrentQ()

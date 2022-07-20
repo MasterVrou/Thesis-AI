@@ -77,7 +77,7 @@ public class BossController : ParentController
         once = false;
         damageOnce = false;
 
-        maxHealth = 20000;
+        maxHealth = 120;
         currentHealth = maxHealth;
         groundCheckRadius = 0.4f;
         chargeStartTime = 0;
@@ -312,10 +312,17 @@ public class BossController : ParentController
 
     private void CheckHealth()
     {
-        if (currentHealth <= 0)
-        {
-            Death();
-        }
+        //if (currentHealth <= 0)
+        //{
+        //    //Death();
+        //    Respawn();
+        //}
+    }
+
+    public void Respawn()
+    {
+        currentHealth = maxHealth;
+        transform.position = new Vector2(0, 0);
     }
 
     private void Death()

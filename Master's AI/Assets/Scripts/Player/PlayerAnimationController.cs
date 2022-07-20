@@ -45,7 +45,7 @@ public class PlayerAnimationController : MonoBehaviour
         lightAttackDamage = 10;
         heavyAttackDamage = 17;
 
-        maxHealth = 50;
+        maxHealth = 60;
         currentHealth = maxHealth;
 
         inAnimation = false;
@@ -128,13 +128,20 @@ public class PlayerAnimationController : MonoBehaviour
             }
         }
         currentHealth -= ad.damageAmount;
+
+        //if(currentHealth <= 0)
+        //{
+        //    Respawn();
+        //}
     }
 
-    private void OnDrawGizmos()
+    public void Respawn()
     {
-        Gizmos.DrawSphere(lightAttackHitBoxPos.position, lightAttackRadius);
-        Gizmos.DrawSphere(heavyAttackHitBoxPos.position, heavyAttackRadius);
+        currentHealth = maxHealth;
+        transform.position = new Vector2(-17, 0);
     }
+
+    
 
     private void UsedLight()
     {
@@ -228,5 +235,13 @@ public class PlayerAnimationController : MonoBehaviour
     public void SetInAnimation(bool b)
     {
         inAnimation = b;
+    }
+
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(lightAttackHitBoxPos.position, lightAttackRadius);
+        Gizmos.DrawSphere(heavyAttackHitBoxPos.position, heavyAttackRadius);
     }
 }
