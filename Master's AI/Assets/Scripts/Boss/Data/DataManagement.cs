@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using Newtonsoft.Json;
 
 public class DataManagement : MonoBehaviour
 {
@@ -331,7 +333,7 @@ public class DataManagement : MonoBehaviour
                                     ps.distance = DisanceEntry(deL);
 
                                     Qtable.Add(ps, ActionRandomiser());
-
+                                    
                                 }
                             }
                         }
@@ -339,6 +341,16 @@ public class DataManagement : MonoBehaviour
                 }
             }
         }
+
+        //write the data to jason for testing
+        outputToJSON();
+    }
+
+    private void outputToJSON()
+    {
+        string strOutput = JsonConvert.SerializeObject(Qtable, Formatting.Indented);
+
+        File.WriteAllText(Application.dataPath + "/text.json", strOutput);
     }
 
     private BossAction ActionRandomiser()
