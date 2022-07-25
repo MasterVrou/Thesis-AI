@@ -11,6 +11,8 @@ public class DataManagement : MonoBehaviour
 
     Dictionary<PlayerState, BossAction> Qtable;
 
+    public TextAsset textJSON;
+
     private PlayerState currentState;
     private PlayerState lastState;
 
@@ -306,34 +308,68 @@ public class DataManagement : MonoBehaviour
         }
     }
 
+    public ReadLoadList readLoadList = new ReadLoadList();
+    public static string fileName = "/text.json";
     private void QtableSetUp()
     {
-        PlayerState ps;
-
-        for(int liA=0; liA < 4; liA++)
+        string fullPath = Application.dataPath + "/text.json";
+        if (File.Exists(fullPath))
         {
-            for(int heA=0; heA < 4; heA++)
-            {
-                for(int parry=0; parry < 4; parry++)
-                {
-                    for(int dodge=0; dodge < 4; dodge++)
-                    {
-                        for(int offJ=0; offJ < 4; offJ++)
-                        {
-                            for(int defJ=0; defJ < 4; defJ++)
-                            {
-                                for(int deL=0; deL < 6; deL++)
-                                {
-                                    ps.lightAttack = SkillEntry(liA);
-                                    ps.heavyAttack = SkillEntry(heA);
-                                    ps.parry = SkillEntry(parry);
-                                    ps.dodge = SkillEntry(dodge);
-                                    ps.offJump = SkillEntry(offJ);
-                                    ps.defJump = SkillEntry(defJ);
-                                    ps.distance = DisanceEntry(deL);
+            LoadFromJson();
+        }
+        else
+        {
+            PlayerState ps;
+            ReadLoad rl;
 
-                                    Qtable.Add(ps, ActionRandomiser());
-                                    
+            for (int liA = 0; liA < 4; liA++)
+            {
+                for (int heA = 0; heA < 4; heA++)
+                {
+                    for (int parry = 0; parry < 4; parry++)
+                    {
+                        for (int dodge = 0; dodge < 4; dodge++)
+                        {
+                            for (int offJ = 0; offJ < 4; offJ++)
+                            {
+                                for (int defJ = 0; defJ < 4; defJ++)
+                                {
+                                    for (int deL = 0; deL < 6; deL++)
+                                    {
+                                        ps.lightAttack = SkillEntry(liA);
+                                        ps.heavyAttack = SkillEntry(heA);
+                                        ps.parry = SkillEntry(parry);
+                                        ps.dodge = SkillEntry(dodge);
+                                        ps.offJump = SkillEntry(offJ);
+                                        ps.defJump = SkillEntry(defJ);
+                                        ps.distance = DisanceEntry(deL);
+
+                                        BossAction bs = ActionRandomiser();
+                                        Qtable.Add(ps, bs);
+
+                                        //rl.lightAttack1 = ps.lightAttack.x;
+                                        //rl.lightAttack2 = ps.lightAttack.y;
+                                        //rl.heavyAttack1 = ps.heavyAttack.x;
+                                        //rl.heavyAttack2 = ps.heavyAttack.y;
+                                        //rl.parry1 = ps.parry.x;
+                                        //rl.parry2 = ps.parry.y;
+                                        //rl.dodge1 = ps.dodge.x;
+                                        //rl.dodge2 = ps.dodge.y;
+                                        //rl.offJump1 = ps.offJump.x;
+                                        //rl.offJump2 = ps.offJump.y;
+                                        //rl.defJump1 = ps.defJump.x;
+                                        //rl.defJump2 = ps.defJump.y;
+                                        //rl.distance = ps.distance;
+
+                                        //rl.meleeAttack = bs.meleeAttack;
+                                        //rl.block = bs.block;
+                                        //rl.charge = bs.charge;
+                                        //rl.fireAttack = bs.fireAttack;
+                                        //rl.fireball = bs.fireball;
+                                        //rl.firepillar = bs.firepillar;
+
+                                        //readLoadList.rlList.Add(rl);
+                                    }
                                 }
                             }
                         }
@@ -341,16 +377,68 @@ public class DataManagement : MonoBehaviour
                 }
             }
         }
-
         //write the data to jason for testing
-        outputToJSON();
+        //SaveToJSON();
+        //LoadFromJson();
     }
 
-    private void outputToJSON()
+    private void SaveToJSON()
     {
-        string strOutput = JsonConvert.SerializeObject(Qtable, Formatting.Indented);
+        string strOutput = JsonConvert.SerializeObject(readLoadList, Formatting.Indented);
+
+        readLoadList.rlList.Clear();
 
         File.WriteAllText(Application.dataPath + "/text.json", strOutput);
+    }
+    
+    private void LoadFromJson()
+    {
+        readLoadList = JsonUtility.FromJson<ReadLoadList>(textJSON.text);
+        int iterator = 0;
+
+        for (int liA = 0; liA < 4; liA++)
+        {
+            for (int heA = 0; heA < 4; heA++)
+            {
+                for (int parry = 0; parry < 4; parry++)
+                {
+                    for (int dodge = 0; dodge < 4; dodge++)
+                    {
+                        for (int offJ = 0; offJ < 4; offJ++)
+                        {
+                            for (int defJ = 0; defJ < 4; defJ++)
+                            {
+                                for (int deL = 0; deL < 6; deL++)
+                                {
+                                    
+                                    PlayerState ps;
+                                    ps.lightAttack = new Vector2Int(readLoadList.rlList[iterator].lightAttack1, readLoadList.rlList[iterator].lightAttack2);
+                                    ps.heavyAttack = new Vector2Int(readLoadList.rlList[iterator].heavyAttack1, readLoadList.rlList[iterator].heavyAttack2);
+                                    ps.offJump = new Vector2Int(readLoadList.rlList[iterator].offJump1, readLoadList.rlList[iterator].offJump2);
+                                    ps.defJump = new Vector2Int(readLoadList.rlList[iterator].defJump1, readLoadList.rlList[iterator].defJump2);
+                                    ps.dodge = new Vector2Int(readLoadList.rlList[iterator].dodge1, readLoadList.rlList[iterator].dodge2);
+                                    ps.parry = new Vector2Int(readLoadList.rlList[iterator].parry1, readLoadList.rlList[iterator].parry2);
+                                    ps.distance = readLoadList.rlList[iterator].distance;
+
+                                    BossAction bs;
+                                    bs.meleeAttack = readLoadList.rlList[iterator].meleeAttack;
+                                    bs.fireAttack = readLoadList.rlList[iterator].fireAttack;
+                                    bs.charge = readLoadList.rlList[iterator].charge;
+                                    bs.block = readLoadList.rlList[iterator].block;
+                                    bs.fireball = readLoadList.rlList[iterator].fireAttack;
+                                    bs.firepillar = readLoadList.rlList[iterator].firepillar;
+
+                                    Qtable.Add(ps, bs);
+                                    //Debug.Log("parto: " + Qtable[b]);
+
+                                    iterator++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private BossAction ActionRandomiser()

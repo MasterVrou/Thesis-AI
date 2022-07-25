@@ -28,3 +28,33 @@ public struct BossAction
     public float firepillar;
     public float fireball;
 }
+[System.Serializable]
+public struct ReadLoad
+{
+    public int lightAttack1;
+    public int lightAttack2;
+    public int heavyAttack1;
+    public int heavyAttack2;
+    public int offJump1;
+    public int offJump2;
+    public int defJump1;
+    public int defJump2;
+    public int dodge1;
+    public int dodge2;
+    public int parry1;
+    public int parry2;
+    public int distance;
+
+    public float meleeAttack;
+    public float fireAttack;//undodgeable
+    public float block;
+    public float charge;//unblockable
+    public float firepillar;
+    public float fireball;
+}
+
+[System.Serializable]
+public struct ReadLoadList
+{
+    public List<ReadLoad> rlList;
+}

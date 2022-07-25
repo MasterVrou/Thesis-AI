@@ -61,7 +61,6 @@
      <Compile Include="Assets\Projectiles\Projectile.cs" />
      <Compile Include="Assets\Scripts\Boss\BossController.cs" />
      <Compile Include="Assets\Scripts\Boss\BossAnimationController.cs" />
-     <None Include="Assets\text.txt" />
      <None Include="Assets\Sprites\Dark Knight - Pixel Art\ColorSwap\Sprites-ColorSwap.shader" />
      <None Include="Assets\Sprites\EVil Wizard\License.txt" />
      <None Include="Assets\Sprites\Pixel FX - Fire\Read Me.txt" />
