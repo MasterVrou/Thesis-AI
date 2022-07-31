@@ -456,6 +456,7 @@ GameObject:
   - component: {fileID: 550971537}
   - component: {fileID: 550971536}
   - component: {fileID: 550971538}
+  - component: {fileID: 550971539}
   - component: {fileID: 550971532}
   - component: {fileID: 550971531}
   - component: {fileID: 550971535}
@@ -664,6 +665,23 @@ MonoBehaviour:
   textJSON: {fileID: 4900000, guid: 390658c17aa05224496c17961890947f, type: 3}
   readLoadList:
     rlList: []
+--- !u!114 &550971539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550971530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f8362a138a01b64e8fd9e4c32510924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  biases:
+  - 0
+  - 0
+  - 0
+  fitness: 0
 --- !u!1 &591607275
 GameObject:
   m_ObjectHideFlags: 0
@@ -1320,7 +1338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 080907d22b1bcd743b1c3282e92d2206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeScale: 1.01
+  timeScale: 1.4
   boss: {fileID: 550971530}
 --- !u!1 &1976406929
 GameObject:

@@ -79,7 +79,7 @@ public class BossController : ParentController
         damageOnce = false;
         chargeDamageOnce = false;
 
-        maxHealth = 120;
+        maxHealth = 1000;
         currentHealth = maxHealth;
         groundCheckRadius = 0.4f;
         chargeStartTime = 0;

@@ -11,6 +11,8 @@ public class DataManagement : MonoBehaviour
 
     Dictionary<PlayerState, BossAction> Qtable;
 
+    private NNetwork NN;
+
     public TextAsset textJSON;
 
     private PlayerState currentState;
@@ -104,6 +106,9 @@ public class DataManagement : MonoBehaviour
         bController = GetComponent<BossController>();
         bAnimController = GetComponent<BossAnimationController>();
 
+        NN = GetComponent<NNetwork>();
+        NN.Initialise(2, 10);
+
         updateOnce = false;
         someoneAlive = true;
         actionOnce = false;
@@ -120,7 +125,7 @@ public class DataManagement : MonoBehaviour
 
         Qtable = new Dictionary<PlayerState, BossAction>();
 
-        QtableSetUp();
+        //QtableSetUp();
         UpdateCurrentState();
     }
 
@@ -128,11 +133,51 @@ public class DataManagement : MonoBehaviour
     {
         UpdateDistanceLabel();
         UpdateCurrentState();
-        Training();
+        NN_Training();
+        //Q_Training();
         //LogPrint();
     }
 
-    private void Training()
+    private void FixedUpdate()
+    {
+        
+    }
+
+    private void NN_Training()
+    {
+        if(!bossDied && !playerDied)
+        {
+            if(!bAnimController.GetInAction() && !actionOnce)
+            {   
+                BestAction(NN.RunNetwork(currentState));
+                nextAction = fAction;
+
+                UpdateBossForm();
+                if (boss == "Knight")
+                {
+                    bController.SetKnightAction(nextAction);
+                }
+                else if (boss == "Mage")
+                {
+                    bController.SetMageAction(nextAction);
+                }
+
+                if (bAnimController.GetInAction() && actionOnce)
+                {
+                    actionOnce = false;
+                }
+            }
+        }
+        else
+        {
+            bossDied = false;
+            playerDied = false;
+            bController.Respawn();
+            pAnimController.Respawn();
+        }
+    }
+
+    private void Q_Training()
     {
 
         if (!bossDied && !playerDied)
@@ -218,12 +263,13 @@ public class DataManagement : MonoBehaviour
                 UpdateQtable();
                 stepCounter++;
                 Debug.Log("STEP " + stepCounter);
+                epsilon *= epsilonDecay;
             }
             
         }
         else
         {
-            epsilon *= epsilonDecay;
+            
             //add to the total reward
             bossDied = false;
             playerDied = false;
@@ -346,29 +392,6 @@ public class DataManagement : MonoBehaviour
 
                                         BossAction bs = ActionRandomiser();
                                         Qtable.Add(ps, bs);
-
-                                        //rl.lightAttack1 = ps.lightAttack.x;
-                                        //rl.lightAttack2 = ps.lightAttack.y;
-                                        //rl.heavyAttack1 = ps.heavyAttack.x;
-                                        //rl.heavyAttack2 = ps.heavyAttack.y;
-                                        //rl.parry1 = ps.parry.x;
-                                        //rl.parry2 = ps.parry.y;
-                                        //rl.dodge1 = ps.dodge.x;
-                                        //rl.dodge2 = ps.dodge.y;
-                                        //rl.offJump1 = ps.offJump.x;
-                                        //rl.offJump2 = ps.offJump.y;
-                                        //rl.defJump1 = ps.defJump.x;
-                                        //rl.defJump2 = ps.defJump.y;
-                                        //rl.distance = ps.distance;
-
-                                        //rl.meleeAttack = bs.meleeAttack;
-                                        //rl.block = bs.block;
-                                        //rl.charge = bs.charge;
-                                        //rl.fireAttack = bs.fireAttack;
-                                        //rl.fireball = bs.fireball;
-                                        //rl.firepillar = bs.firepillar;
-
-                                        //readLoadList.rlList.Add(rl);
                                     }
                                 }
                             }
@@ -728,136 +751,3 @@ public class DataManagement : MonoBehaviour
         return distanceLabel;
     }
 }
-
-
-////is it connected to the action?
-//private void NextBestState()
-//{
-//    List<PlayerState> ps = new List<PlayerState>();
-
-//    if (currentState.lightAttack.x == 1)
-//    {
-//        for(int i=0; i<6; i++)
-//        {
-//            PlayerState tempState = currentState;
-//            tempState.lightAttack.y = 1;
-//            tempState.heavyAttack.y = 0;
-//            tempState.parry.y = 0;
-//            tempState.dodge.y = 0;
-//            tempState.defJump.y = 0;
-//            tempState.offJump.y = 0;
-//            if (i == 0)
-//            {
-//                tempState.lightAttack.x = 1;
-//                tempState.heavyAttack.x = 0;
-//                tempState.parry.x = 0;
-//                tempState.dodge.x = 0;
-//                tempState.defJump.x = 0;
-//                tempState.offJump.x = 0;
-
-//            }
-//            else if(i == 1)
-//            {
-//                tempState.lightAttack.x = 0;
-//                tempState.heavyAttack.x = 1;
-//                tempState.parry.x = 0;
-//                tempState.dodge.x = 0;
-//                tempState.defJump.x = 0;
-//                tempState.offJump.x = 0;
-//            }
-//            else if(i == 2)
-//            {
-//                //tempState.offJump.x = 1
-//            }
-//        }
-//    }
-//    else if (currentState.heavyAttack.x == 1)
-//    {
-
-//    }
-//    else if(currentState.offJump.x == 1)
-//    {
-
-//    }
-//    else if(currentState.defJump.x == 1)
-//    {
-
-//    }
-//    else if(currentState.dodge.x == 1)
-//    {
-
-//    }
-//}
-
-
-//private void Training2()
-//{
-//    //episodes
-//    if (someoneAlive)
-//    {
-//        //when animation ends, step ends
-//        if (!EqualsState(currentState, lastState) || stepTimer < Time.time)
-//        {
-//            stepTimer = Time.time + stepPeriod;
-//            stepCounter++;
-//            Debug.Log("step: " + stepCounter);
-
-//            BestAction(Qtable[currentState]);
-
-//            if (Random.Range(0,1) > epsilon)
-//            {
-//                //fAction in BestAction function
-//                nextAction = fAction;
-//            }
-//            else
-//            {
-//                nextAction = RandomAction();
-//            }
-
-//            float currentQ = 0;
-//            if (nextAction == "Block")
-//            {
-//                currentQ = Qtable[currentState].block;
-//            }
-//            else if(nextAction == "Attack1")
-//            {
-//                currentQ = Qtable[currentState].meleeAttack;
-//            }
-//            else if(nextAction == "Attack2")
-//            {
-//                currentQ = Qtable[currentState].fireAttack;
-//            }
-
-
-//            float hpBefore = pAnimController.GetCurrentHP();
-
-//            bController.SetTrigger(nextAction);
-
-//            if (pAnimController.GetCurrentHP() < hpBefore)
-//            {
-//                stepReward = hitPlayerReward;
-//            }
-//            else
-//            {
-//                stepReward = missPlayerPunishment;
-//            }
-
-//            float newQvalue;
-
-//            if(pAnimController.GetCurrentHP() <= 0)
-//            {
-//                newQvalue = winReward;
-//            }
-//            else
-//            {
-
-//                //newQvalue = (1 - learningRate) * currentMaxQvalue + learningRate * (stepReward + discount * nextMaxQvalue);
-//                newQvalue = currentQ + learningRate * (stepReward + discount * fMax - currentQ);
-//            }
-//        }
-
-
-//        //Update Qtable
-
-//    }
-//}

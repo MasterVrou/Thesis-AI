@@ -45,7 +45,7 @@ public class PlayerAnimationController : MonoBehaviour
         lightAttackDamage = 10;
         heavyAttackDamage = 17;
 
-        maxHealth = 60;
+        maxHealth = 700;
         currentHealth = maxHealth;
 
         inAnimation = false;
