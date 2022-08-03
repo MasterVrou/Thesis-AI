@@ -63,11 +63,12 @@
     <Compile Include="Assets\Scripts\Structs\QStateStruct.cs" />
     <Compile Include="Assets\Scripts\ParentController.cs" />
     <Compile Include="Assets\Scripts\Player\Auto\TrainingAI.cs" />
+    <Compile Include="Assets\Scripts\Boss\Data\NNetwork.cs" />
     <Compile Include="Assets\Sprites\Dark Knight - Pixel Art\Demo\Sensor_DarkKnight.cs" />
     <Compile Include="Assets\Projectiles\Projectile.cs" />
     <Compile Include="Assets\Scripts\Boss\BossController.cs" />
     <Compile Include="Assets\Scripts\Boss\BossAnimationController.cs" />
-    <Compile Include="Assets\Scripts\Boss\Data\NNetwork.cs" />
+    <Compile Include="Assets\Scripts\Boss\Data\GenAlgorithm.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\Boss\Data\nn plugin\MathNet.Numerics.xml" />
@@ -301,11 +302,11 @@
     <Reference Include="UnityEditor.UnityConnectModule">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.27f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="MathNet.Numerics">
       <HintPath>Assets\Scripts\Boss\Data\nn plugin\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.27f1\Editor\Data\PlaybackEngines\iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

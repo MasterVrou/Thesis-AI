@@ -12,6 +12,7 @@ public class DataManagement : MonoBehaviour
     Dictionary<PlayerState, BossAction> Qtable;
 
     private NNetwork NN;
+    private GenAlgorithm GN;
 
     public TextAsset textJSON;
 
@@ -34,9 +35,11 @@ public class DataManagement : MonoBehaviour
     private bool actionOnce;
 
     private string boss;
-    /// <summary>
-    /// /////////////////////////////////Q-LEARNING VARS///////////////////////////////////////////////
-    /// </summary>
+
+    //NNETWORK
+    public float overallFitness = 0;
+
+    //Q-LEARNING
     private int totalEpisodes;
     private int totalSteps;
     private int stepCounter;
@@ -106,6 +109,7 @@ public class DataManagement : MonoBehaviour
         bController = GetComponent<BossController>();
         bAnimController = GetComponent<BossAnimationController>();
 
+        GN = GetComponent<GenAlgorithm>();
         NN = GetComponent<NNetwork>();
         NN.Initialise(2, 10);
 
@@ -127,6 +131,9 @@ public class DataManagement : MonoBehaviour
 
         //QtableSetUp();
         UpdateCurrentState();
+
+        //Genetic algorithm stuff
+        //GN.ResetNetwork(overallFitness);
     }
 
     private void Update()
@@ -152,6 +159,8 @@ public class DataManagement : MonoBehaviour
                 BestAction(NN.RunNetwork(currentState));
                 nextAction = fAction;
 
+                float hpBefore = pAnimController.GetCurrentHP();
+
                 UpdateBossForm();
                 if (boss == "Knight")
                 {
@@ -161,6 +170,8 @@ public class DataManagement : MonoBehaviour
                 {
                     bController.SetMageAction(nextAction);
                 }
+
+                CalculateFitness(hpBefore);
 
                 if (bAnimController.GetInAction() && actionOnce)
                 {
@@ -174,7 +185,50 @@ public class DataManagement : MonoBehaviour
             playerDied = false;
             bController.Respawn();
             pAnimController.Respawn();
+            NN = GN.ResetNetwork(overallFitness);
+            overallFitness = 0;
         }
+    }
+
+    private void CalculateFitness(float hpBefore)
+    {
+        float reward = 0;
+        if (nextAction == "Block")
+        {
+            if (bAnimController.GetDamageBlocked())
+            {
+                reward = goodBlockReward;
+            }
+            else
+            {
+                reward = missBlockPunishment;
+            }
+        }
+        else
+        {
+            if (pAnimController.GetCurrentHP() < hpBefore)
+            {
+                reward = hitPlayerReward;
+            }
+            else
+            {
+                reward = missPlayerPunishment;
+            }
+        }
+
+
+        if (pAnimController.GetCurrentHP() <= 0)
+        {
+            reward = winReward;
+            playerDied = true;
+        }
+        if (bController.GetCurrentHealth() <= 0)
+        {
+            reward = losePunishment;
+            bossDied = true;
+        }
+
+        overallFitness += reward/10;
     }
 
     private void Q_Training()
@@ -528,25 +582,6 @@ public class DataManagement : MonoBehaviour
 
     private void LogPrint()
     {
-        //if (!pAnimController.GetInAnimation() && !updateOnce)
-        //{
-        //    updateOnce = true;
-
-        //    UpdateCurrentState();
-
-        //    Debug.Log("Light Data: " + currentState.lightAttack.x + ", " + currentState.lightAttack.y + "\n"
-        //            + "Heavy Data: " + currentState.heavyAttack.x + ", " + currentState.heavyAttack.y + "\n"
-        //            + "Dodge Data: " + currentState.dodge.x + ", " + currentState.dodge.y + ", " + "\n"
-        //            + "Parry Data: " + currentState.parry.x + ", " + currentState.parry.y + ", " + "\n"
-        //            + "DefJump Data: " + currentState.defJump.x + ", " + currentState.defJump.y + "\n"
-        //            + "OfJump Data: " + currentState.offJump.x + ", " + currentState.offJump.y);
-        //}
-
-        //if (pAnimController.GetInAnimation())
-        //{
-        //    updateOnce = false;
-        //}
-
         if (!updateOnce)
         {
             updateOnce = true;
