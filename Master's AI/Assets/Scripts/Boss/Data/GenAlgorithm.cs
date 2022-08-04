@@ -77,6 +77,8 @@ public class GenAlgorithm : MonoBehaviour
 
         FillPopulationWithRandomValues(newPopulationArray, naturallySelected);
 
+        //Debug.Log("poulationArray: " + populationArray[0].);
+
         populationArray = newPopulationArray;
         
 
@@ -195,7 +197,8 @@ public class GenAlgorithm : MonoBehaviour
         {
             //deep copy
             //newPopulationArray[naturallySelected] = populationArray[i].DeepCopy(layers, neurals);
-            newPopulationArray[naturallySelected] = populationArray[i];
+            //newPopulationArray[naturallySelected] = populationArray[i];
+            newPopulationArray[naturallySelected] = populationArray[i].DeepClone(layers, neurals);
             newPopulationArray[naturallySelected].fitness = 0;
 
             naturallySelected++;

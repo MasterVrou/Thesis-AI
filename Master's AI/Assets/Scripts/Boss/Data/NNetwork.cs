@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using Newtonsoft.Json;
 
 using MathNet.Numerics.LinearAlgebra;
 //using System;
@@ -50,6 +52,7 @@ public class NNetwork : MonoBehaviour
         RandomiseWeights();
     }
 
+
     
 
     public NNetwork DeepCopy(int hiddenLayerCount, int hiddenNeuronCount)
@@ -60,7 +63,7 @@ public class NNetwork : MonoBehaviour
 
         for (int i = 0; i < this.weights.Count; i++)
         {
-            Matrix<float> currentWeight = Matrix<float>.Build.Dense(weights[i].RowCount, weights[i].ColumnCount);
+            Matrix<float> currentWeight = Matrix<float>.Build.Dense(this.weights[i].RowCount, this.weights[i].ColumnCount);
 
             for(int x=0; x<currentWeight.RowCount; x++)
             {
@@ -113,6 +116,49 @@ public class NNetwork : MonoBehaviour
         }
     }
 
+    public NNetwork DeepClone(int hiddenLayerCount, int hiddenNeuralCount)
+    {
+        NNetwork net = new NNetwork();
+
+        List<Matrix<float>> newWeights = new List<Matrix<float>>();
+
+        for (int i = 0; i < hiddenLayerCount; i++)
+        {
+            Matrix<float> f = Matrix<float>.Build.Dense(1, hiddenNeuralCount);
+            net.hiddenLayers.Add(f);
+            net.biases.Add(Random.Range(-1f, 1f));
+
+            if (i == 0)
+            {
+                Matrix<float> inputToHidden = Matrix<float>.Build.Dense(13, hiddenNeuralCount);
+                net.weights.Add(inputToHidden);
+            }
+            else
+            {
+                Matrix<float> hiddenToHidden = Matrix<float>.Build.Dense(hiddenNeuralCount, hiddenNeuralCount);
+                net.weights.Add(hiddenToHidden);
+            }
+        }
+
+        Matrix<float> hiddenToOutput = Matrix<float>.Build.Dense(hiddenNeuralCount, 6);
+        net.weights.Add(hiddenToOutput);
+        net.biases.Add(Random.Range(-1f, 1f));
+
+        for (int i = 0; i < this.weights.Count; i++)
+        {
+            for (int x = 0; x < this.weights[i].RowCount; x++)
+            {
+                for (int y = 0; y < this.weights[i].ColumnCount; y++)
+                {
+                    net.weights[i][x, y] = this.weights[i][x, y];
+                }
+            }
+        }
+
+        
+
+        return net;
+    }
 
     public BossAction RunNetwork(PlayerState PS)
     {
@@ -140,7 +186,7 @@ public class NNetwork : MonoBehaviour
             hiddenLayers[i] = ((hiddenLayers[i - 1] * weights[i]) + biases[i]).PointwiseTanh();
         }
 
-        outputLayer = ((hiddenLayers[hiddenLayers.Count - 1] * weights[weights.Count - 1]) + biases[biases.Count - 1]).PointwiseTanh();
+        outputLayer = ((hiddenLayers[hiddenLayers.Count-1] * weights[weights.Count-1])+biases[biases.Count-1]).PointwiseTanh();
 
         BossAction action;
 
