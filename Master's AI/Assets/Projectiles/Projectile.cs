@@ -38,19 +38,47 @@ public class Projectile : MonoBehaviour
     {
         CheckPlayerPos();
         attackDetails.position = transform.position;
+
     }
 
     private void FixedUpdate()
     {
-        Collider2D damageHit = Physics2D.OverlapCircle(damagePosition.position, damageRadius, whatIsPlayer);
+        Collider2D projectileHit = Physics2D.OverlapCircle(damagePosition.position, damageRadius, whatIsPlayer);
 
-        if (damageHit)
+        if(this.transform.name == "Fireball(Clone)")
         {
-            damageHit.transform.SendMessage("Damage", attackDetails);
+            DamageEnemy(projectileHit);
+        }
+        else if (this.transform.name == "Hook(Clone)")
+        {
+
+        }
+
+        
+    }
+
+    private void HookEnemy(Collider2D projectileHit)
+    {
+        //if()
+        //{
+
+        //}
+    }
+
+    private void Destroy()
+    {
+        Destroy(gameObject);
+    }
+
+    private void DamageEnemy(Collider2D projectileHit)
+    {
+        if (projectileHit)
+        {
+            projectileHit.transform.SendMessage("Damage", attackDetails);
             Destroy(gameObject);
         }
 
-        if(Mathf.Abs(xStartPos - transform.position.x) >= 20)
+        if (Mathf.Abs(xStartPos - transform.position.x) >= 20)
         {
             Destroy(gameObject);
         }

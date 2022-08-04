@@ -33,6 +33,7 @@ public class BossController : ParentController
     private bool triggerOnce;
     private bool isCharging;
     private bool isBlocking;
+    private bool isHooking;
     private bool damageOnce;
     private bool isFirePillaring;
     private bool pillarTriggered;
@@ -112,6 +113,7 @@ public class BossController : ParentController
         CheckFireball();
         //FirePillar();
         CheckDelay();
+        
     }
 
     private void FixedUpdate()
@@ -151,6 +153,14 @@ public class BossController : ParentController
             }
         }
 
+    }
+
+    private void Hook()
+    {
+        if (!isHooking)
+        {
+            isHooking = true;
+        }
     }
 
     private void FirePillar()
