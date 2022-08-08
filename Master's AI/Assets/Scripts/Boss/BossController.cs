@@ -133,8 +133,9 @@ public class BossController : ParentController
     private void FixedUpdate()
     {
         CheckCharge();
-        BossSwap("Warlock");
-        Hook();
+        CheckHook();
+        //BossSwap("Warlock");
+        //Hook();
     }
 
     private void ChargeDelay()
@@ -352,7 +353,10 @@ public class BossController : ParentController
 
     public void SetWarlockAction(string action)
     {
-
+        if(action == "Hook")
+        {
+            Hook();
+        }
     }
 
     public void SetMageAction(string action)

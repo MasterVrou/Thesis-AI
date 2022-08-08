@@ -11,7 +11,7 @@ public class NNetwork : MonoBehaviour
 {
     public Matrix<float> inputLayer = Matrix<float>.Build.Dense(1, 13);
     public List<Matrix<float>> hiddenLayers = new List<Matrix<float>>();
-    public Matrix<float> outputLayer = Matrix<float>.Build.Dense(1, 6);
+    public Matrix<float> outputLayer = Matrix<float>.Build.Dense(1, 7);
 
     public List<Matrix<float>> weights = new List<Matrix<float>>();
     public List<float> biases = new List<float>();
@@ -45,7 +45,7 @@ public class NNetwork : MonoBehaviour
             }
         }
 
-        Matrix<float> hiddenToOutput = Matrix<float>.Build.Dense(hiddenNeuralCount, 6);
+        Matrix<float> hiddenToOutput = Matrix<float>.Build.Dense(hiddenNeuralCount, 7);
         weights.Add(hiddenToOutput);
         biases.Add(Random.Range(-1f, 1f));
 
@@ -140,7 +140,7 @@ public class NNetwork : MonoBehaviour
             }
         }
 
-        Matrix<float> hiddenToOutput = Matrix<float>.Build.Dense(hiddenNeuralCount, 6);
+        Matrix<float> hiddenToOutput = Matrix<float>.Build.Dense(hiddenNeuralCount, 7);
         net.weights.Add(hiddenToOutput);
         net.biases.Add(Random.Range(-1f, 1f));
 
@@ -197,6 +197,7 @@ public class NNetwork : MonoBehaviour
         action.meleeAttack = Sigmoid(outputLayer[0, 3]);
         action.fireball = Sigmoid(outputLayer[0, 4]);
         action.firepillar = Sigmoid(outputLayer[0, 5]);
+        action.hook = Sigmoid(outputLayer[0, 6]);
 
         return action;
     }

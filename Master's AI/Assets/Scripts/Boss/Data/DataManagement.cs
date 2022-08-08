@@ -129,7 +129,7 @@ public class DataManagement : MonoBehaviour
 
         Qtable = new Dictionary<PlayerState, BossAction>();
 
-        //QtableSetUp();
+        QtableSetUp();
         UpdateCurrentState();
 
         //Genetic algorithm stuff
@@ -141,7 +141,7 @@ public class DataManagement : MonoBehaviour
         UpdateDistanceLabel();
         UpdateCurrentState();
         //NN_Training();
-        //Q_Training();
+        Q_Training();
         //LogPrint();
     }
 
@@ -169,6 +169,10 @@ public class DataManagement : MonoBehaviour
                 else if (boss == "Mage")
                 {
                     bController.SetMageAction(nextAction);
+                }
+                else if(boss == "Warlock")
+                {
+                    bController.SetWarlockAction(nextAction);
                 }
 
                 CalculateFitness(hpBefore);
@@ -264,6 +268,12 @@ public class DataManagement : MonoBehaviour
                 {
                     bController.SetMageAction(nextAction);
                 }
+                else if(boss == "Warlock")
+                {
+                    bController.SetWarlockAction(nextAction);
+                }
+
+                //give different reward for hook
 
                 if(nextAction == "Block")
                 {
@@ -356,6 +366,10 @@ public class DataManagement : MonoBehaviour
         {
             currentQ = Qtable[currentState].charge;
         }
+        else if(nextAction == "Hook")
+        {
+            currentQ = Qtable[currentState].hook;
+        }
     }
 
     private void UpdateQtable()
@@ -392,6 +406,11 @@ public class DataManagement : MonoBehaviour
             a.firepillar = newQ;
             Qtable[currentState] = a;
         }
+        else if (nextAction == "Hook")
+        {
+            a.hook = newQ;
+            Qtable[currentState] = a;
+        }
     }
 
     private void UpdateBossForm()
@@ -405,6 +424,11 @@ public class DataManagement : MonoBehaviour
         {
             bController.BossSwap("Mage");
             boss = "Mage";
+        }
+        else if (boss != "Warlock" && (nextAction == "Hook"))
+        {
+            bController.BossSwap("Warlock");
+            boss = "Warlock";
         }
     }
 
@@ -504,6 +528,7 @@ public class DataManagement : MonoBehaviour
                                     bs.block = readLoadList.rlList[iterator].block;
                                     bs.fireball = readLoadList.rlList[iterator].fireAttack;
                                     bs.firepillar = readLoadList.rlList[iterator].firepillar;
+                                    bs.hook = readLoadList.rlList[iterator].hook;
 
                                     Qtable.Add(ps, bs);
                                     //Debug.Log("parto: " + Qtable[b]);
@@ -528,6 +553,7 @@ public class DataManagement : MonoBehaviour
         a.meleeAttack = Random.Range(-5, 5);
         a.fireball = Random.Range(-5, 5);
         a.firepillar = Random.Range(-5, 5);
+        a.hook = Random.Range(-5, 5);
 
         return a;
     }
@@ -748,11 +774,15 @@ public class DataManagement : MonoBehaviour
         {
             fAction = "Firepillar";
         }
+        if(fMax < a.hook)
+        {
+            fAction = "Hook";
+        }
     }
 
     private string RandomAction()
     {
-        int a = Random.Range(0, 6);
+        int a = Random.Range(0, 7);
         
         if(a == 0)
         {
@@ -774,9 +804,13 @@ public class DataManagement : MonoBehaviour
         {
             return "Fireball";
         }
-        else
+        else if(a == 5)
         {
             return "Firepillar";
+        }
+        else
+        {
+            return "Hook";
         }
     }
 

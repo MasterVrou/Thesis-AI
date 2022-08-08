@@ -53,6 +53,7 @@ public class BossAnimationController : MonoBehaviour
         CheckCharge();
         CheckFirePillar();
         CheckFireball();
+        CheckHook();
     }
 
     private void CheckFirePillar()

@@ -27,6 +27,7 @@ public struct BossAction
     public float charge;//unblockable
     public float firepillar;
     public float fireball;
+    public float hook;
 }
 [System.Serializable]
 public struct ReadLoad
@@ -51,6 +52,7 @@ public struct ReadLoad
     public float charge;//unblockable
     public float firepillar;
     public float fireball;
+    public float hook;
 }
 
 [System.Serializable]
