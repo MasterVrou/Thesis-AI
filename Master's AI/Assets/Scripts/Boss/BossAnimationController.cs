@@ -8,6 +8,8 @@ public class BossAnimationController : MonoBehaviour
     private Transform meleeAttackHitBoxPos;
     [SerializeField]
     private Transform fireAttackHitBoxPos;
+    [SerializeField]
+    private Transform AOEHitBoxPos;
 
     [SerializeField]
     private LayerMask whatIsPlayer;
@@ -20,6 +22,7 @@ public class BossAnimationController : MonoBehaviour
 
     public float meleeAttackRadius = 0.15f;
     public float fireAttackRadius = 0.15f;
+    public float AOERadius = 0.22f;
     private float meleeAttackDamage;
     private float fireAttackDamage;
 
@@ -29,6 +32,7 @@ public class BossAnimationController : MonoBehaviour
     private bool checkPillarOnce;
     private bool checkFireballOnce;
     private bool damageBlocked;
+    private bool checkHookOnce;
 
     private void Start()
     {
@@ -41,6 +45,7 @@ public class BossAnimationController : MonoBehaviour
         checkChargeOnce = true;
         checkPillarOnce = true;
         checkFireballOnce = true;
+        checkHookOnce = true;
     }
 
     private void Update()
@@ -73,6 +78,20 @@ public class BossAnimationController : MonoBehaviour
         else if(!bController.GetIsFireballing() && !checkFireballOnce)
         {
             checkFireballOnce = true;
+            inAction = false;
+        }
+    }
+
+    private void CheckHook()
+    {
+        if (bController.GetIsHooking() || bController.GetIsAOEing())
+        {
+            inAction = true;
+            checkHookOnce = false;
+        }
+        else if((!bController.GetIsHooking() || !bController.GetIsAOEing())  && !checkHookOnce)
+        {
+            checkHookOnce = true;
             inAction = false;
         }
     }
@@ -113,6 +132,19 @@ public class BossAnimationController : MonoBehaviour
         Collider2D[] detectedObjects = Physics2D.OverlapCircleAll(meleeAttackHitBoxPos.position, meleeAttackRadius, whatIsPlayer);
 
         attackDetails.damageAmount = meleeAttackDamage;
+        attackDetails.position = transform.position;
+
+        foreach (Collider2D collider in detectedObjects)
+        {
+            collider.transform.SendMessage("Damage", attackDetails);
+        }
+    }
+
+    private void CheckAOEHitBox()
+    {
+        Collider2D[] detectedObjects = Physics2D.OverlapCircleAll(AOEHitBoxPos.position, AOERadius, whatIsPlayer);
+
+        attackDetails.damageAmount = 30;
         attackDetails.position = transform.position;
 
         foreach (Collider2D collider in detectedObjects)
@@ -186,5 +218,6 @@ public class BossAnimationController : MonoBehaviour
     {
         Gizmos.DrawSphere(meleeAttackHitBoxPos.position, meleeAttackRadius);
         Gizmos.DrawSphere(fireAttackHitBoxPos.position, fireAttackRadius);
+        Gizmos.DrawSphere(AOEHitBoxPos.position, AOERadius);
     }
 }

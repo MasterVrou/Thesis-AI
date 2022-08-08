@@ -70,6 +70,7 @@
     <Compile Include="Assets\Projectiles\Projectile.cs" />
     <Compile Include="Assets\Scripts\Boss\BossController.cs" />
     <Compile Include="Assets\Scripts\Boss\BossAnimationController.cs" />
+    <Compile Include="Assets\Scripts\Boss\FinishHook.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\Boss\Data\nn plugin\MathNet.Numerics.xml" />

@@ -13,7 +13,11 @@ public class BossController : ParentController
     [SerializeField]
     private RuntimeAnimatorController KnightController;
     [SerializeField]
+    private RuntimeAnimatorController WarlockController;
+    [SerializeField]
     private GameObject fireball;
+    [SerializeField]
+    public GameObject hook;
     [SerializeField]
     private LayerMask whatIsPlayer;
 
@@ -40,6 +44,8 @@ public class BossController : ParentController
     private bool isFireBalling;
     private bool isDelayed;
     private bool chargeDamageOnce;
+    private bool isAOEing;
+    
     
     private float maxHealth;
     private float chargeStartTime;
@@ -53,6 +59,10 @@ public class BossController : ParentController
     private float fireballDuration;
     private float chargeDelayStartTime;
     private float chargeDelayDuration;
+    private float hookStartTime;
+    private float hookDuration;
+    private float AOEDuration;
+    private float AOEStartTime;
 
     public float currentHealth;
     public float chargeSpeed;
@@ -75,6 +85,8 @@ public class BossController : ParentController
         pillarTriggered = false;
         isFireBalling = false;
         isDelayed = false;
+        isHooking = false;
+        isAOEing = false;
 
         once = false;
         damageOnce = false;
@@ -91,6 +103,8 @@ public class BossController : ParentController
         pillarTriggeredDuration = 1;
         fireballDuration = 1;
         chargeDelayDuration = 0.7f;
+        hookDuration = 1.5f;
+        AOEDuration = 1; 
 
         parentFirePillar = transform.Find("FirePillar").gameObject;
         pillarWarning = parentFirePillar.transform.Find("Warning").gameObject;
@@ -113,12 +127,14 @@ public class BossController : ParentController
         CheckFireball();
         //FirePillar();
         CheckDelay();
-        
+        CheckHook();
     }
 
     private void FixedUpdate()
     {
         CheckCharge();
+        BossSwap("Warlock");
+        Hook();
     }
 
     private void ChargeDelay()
@@ -155,13 +171,7 @@ public class BossController : ParentController
 
     }
 
-    private void Hook()
-    {
-        if (!isHooking)
-        {
-            isHooking = true;
-        }
-    }
+    
 
     private void FirePillar()
     {
@@ -170,7 +180,6 @@ public class BossController : ParentController
             isFirePillaring = true;
             firePillarStartTime = Time.time;
             pillarWarning.SetActive(true);
-            
         }
     }
 
@@ -206,18 +215,55 @@ public class BossController : ParentController
 
     private void Fireball()
     {
-        Instantiate(fireball, transform.position, Quaternion.identity);
-        fireballStartTime = Time.time;
-        isFireBalling = true;
+        if (!isFireBalling)
+        {
+            Instantiate(fireball, transform.position, Quaternion.identity);
+            fireballStartTime = Time.time;
+            isFireBalling = true;
+        }
     }
 
     private void CheckFireball()
     {
-        if(fireballStartTime + fireballDuration < Time.time)
+        if (fireballStartTime + fireballDuration < Time.time)
         {
             isFireBalling = false;
         }
     }
+
+    private void Hook()
+    {
+        if (!isHooking && !isAOEing)
+        {
+            Instantiate(hook, transform.position, Quaternion.identity);
+            hookStartTime = Time.time;
+            isHooking = true;
+            anim.SetBool("isHooking", isHooking);
+        }
+    }
+
+    private void CheckHook()
+    {
+        if (hookStartTime + hookDuration < Time.time && isHooking)
+        {
+            isHooking = false;
+            isAOEing = true;
+            anim.SetBool("isHooking", isHooking);
+            anim.SetBool("isAOEing", isAOEing);
+            AOEStartTime = Time.time;
+        }
+    }
+
+    private void FinishAOE()
+    {
+        //if (isAOEing && AOEStartTime + AOEDuration < Time.time)
+        //{
+        //    isAOEing = false;
+        //}
+        isAOEing = false;
+        anim.SetBool("isAOEing", isAOEing);
+    }
+    
     public void BossSwap(string boss)
     {
         if(boss == "Mage")
@@ -231,6 +277,12 @@ public class BossController : ParentController
             anim.runtimeAnimatorController = KnightController;
             hitbox.size = new Vector2(0.79f, 1.27f);
             hitbox.offset = new Vector2(0.1f, 0.71f);
+        }
+        else if(boss == "Warlock")
+        {
+            anim.runtimeAnimatorController = WarlockController;
+            hitbox.size = new Vector2(0.71f, 1.096f);
+            hitbox.offset = new Vector2(-0.34f, -0.16f);
         }
     }
 
@@ -296,6 +348,11 @@ public class BossController : ParentController
                 chargeDamageOnce = false;
             }
         }
+    }
+
+    public void SetWarlockAction(string action)
+    {
+
     }
 
     public void SetMageAction(string action)
@@ -417,11 +474,20 @@ public class BossController : ParentController
     {
         return isFireBalling;
     }
+
+    public bool GetIsHooking()
+    {
+        return isHooking;
+    }
+
+    public bool GetIsAOEing()
+    {
+        return isAOEing;
+    }
     //Setters
     public void SetCurrentHealth(float hp)
     {
         currentHealth = hp;
-        
     }
 
     public void ResetTriggerOnce(bool b)

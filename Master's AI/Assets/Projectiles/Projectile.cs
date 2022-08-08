@@ -13,6 +13,7 @@ public class Projectile : MonoBehaviour
 
     private GameObject player;
     private Rigidbody2D rb;
+    private SpriteRenderer sb;
 
     private AttackDetails attackDetails;
 
@@ -20,18 +21,26 @@ public class Projectile : MonoBehaviour
     private float xStartPos;
     private int direction;
 
-    bool once = false; 
+    bool once;
+    bool damageOnce;
+    bool flipOnce;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
 
+        sb = GetComponent<SpriteRenderer>();
+
         xStartPos = transform.position.x;
 
         attackDetails.position = transform.position;
-        attackDetails.damageAmount = 10;
+        
         speed = 7;
         direction = 1;
+
+        once = false;
+        damageOnce = false;
+        flipOnce = false;
     }
 
     private void Update()
@@ -47,22 +56,60 @@ public class Projectile : MonoBehaviour
 
         if(this.transform.name == "Fireball(Clone)")
         {
+            attackDetails.damageAmount = 10;
             DamageEnemy(projectileHit);
         }
         else if (this.transform.name == "Hook(Clone)")
-        {
-
+        { 
+            attackDetails.damageAmount = 11;
+            HookEnemy(projectileHit);
         }
 
-        
+        rb.velocity = new Vector2(direction * speed, rb.velocity.y);
     }
 
     private void HookEnemy(Collider2D projectileHit)
     {
-        //if()
-        //{
+        if (projectileHit)
+        {
+            if(!flipOnce && !damageOnce)
+            {
+                flipOnce = true;
+                damageOnce = true;
+                projectileHit.transform.SendMessage("Damage", attackDetails);
+                sb.flipX = !sb.flipX;
+                if (direction == 1)
+                {
+                    direction = -1;
+                }
+                else
+                {
+                    direction = 1;
+                }
+            }
+        }
 
-        //}
+        if (Mathf.Abs(xStartPos - transform.position.x) <= 1 && flipOnce)
+        {
+            Destroy();
+        }
+
+        if (Mathf.Abs(xStartPos - transform.position.x) >= 10)
+        {
+            if (!flipOnce)
+            {
+                flipOnce = true;
+                sb.flipX = !sb.flipX;
+                if (direction == 1)
+                {
+                    direction = -1;
+                }
+                else
+                {
+                    direction = 1;
+                }
+            }
+        }
     }
 
     private void Destroy()
@@ -78,11 +125,10 @@ public class Projectile : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (Mathf.Abs(xStartPos - transform.position.x) >= 20)
+        if (Mathf.Abs(xStartPos - transform.position.x) >= 10)
         {
             Destroy(gameObject);
         }
-        rb.velocity = new Vector2(direction * speed, rb.velocity.y);
     }
 
     private void CheckPlayerPos()

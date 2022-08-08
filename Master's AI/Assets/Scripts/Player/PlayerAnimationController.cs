@@ -127,12 +127,15 @@ public class PlayerAnimationController : MonoBehaviour
                 return;
             }
         }
+
         currentHealth -= ad.damageAmount;
 
-        //if(currentHealth <= 0)
-        //{
-        //    Respawn();
-        //}
+        if (ad.damageAmount == 11)
+        {
+            pController.Hooked();
+        }
+        
+
     }
 
     public void Respawn()

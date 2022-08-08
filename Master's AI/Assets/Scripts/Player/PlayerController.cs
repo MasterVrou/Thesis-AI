@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class PlayerController : ParentController
 {
+    [SerializeField]
+    private Transform bossPos;
+
     private PlayerAnimationController pAnimController;
 
     private bool isWalking;
     private bool isDodging;
     private bool canWalk;
     private bool startingAnim;
+    private bool isHooked;
 
     //1 is right, -1 is left
     private float dodgeStartTime;
@@ -30,6 +34,7 @@ public class PlayerController : ParentController
         isDodging = false;
         startingAnim = false;
         canWalk = true;
+        isHooked = false;
 
         movementSpeed = 7;
         jumpSpeed = 12;
@@ -57,6 +62,7 @@ public class PlayerController : ParentController
         //////////////////////////////////////////////uncomment after training
         //Walk();
         CheckDodge();
+        CheckHook();
     }
 
     private void UpdateAnimations()
@@ -122,10 +128,35 @@ public class PlayerController : ParentController
             
         }
     }
+    
+    public void Hooked()
+    {
+        isHooked = true;
+    }
+
+    private void CheckHook()
+    {
+        if (isHooked)
+        {
+            if(bossPos.position.x < this.transform.position.x)
+            {
+                rb.velocity = new Vector2(-7, rb.velocity.y);
+            }
+            else
+            {
+                rb.velocity = new Vector2(7, rb.velocity.y);
+            }
+        }
+
+        if(Mathf.Abs(bossPos.position.x - this.transform.position.x) < 0.5)
+        {
+            isHooked = false;
+        }
+    }
 
     private void Walk()
     {
-        if (canWalk && !isDodging)
+        if (canWalk && !isDodging && !isHooked)
         {
             rb.velocity = new Vector2(movementSpeed * movementDirection, rb.velocity.y);
         }
@@ -134,7 +165,7 @@ public class PlayerController : ParentController
             rb.velocity = new Vector2(0, 0);
         }
 
-        if (Mathf.Abs(rb.velocity.x) >= 0.01f && !isDodging)
+        if (Mathf.Abs(rb.velocity.x) >= 0.01f && !isDodging && !isHooked)
         {
             isWalking = true;
         }

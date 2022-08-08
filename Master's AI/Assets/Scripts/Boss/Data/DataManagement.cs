@@ -140,7 +140,7 @@ public class DataManagement : MonoBehaviour
     {
         UpdateDistanceLabel();
         UpdateCurrentState();
-        NN_Training();
+        //NN_Training();
         //Q_Training();
         //LogPrint();
     }
