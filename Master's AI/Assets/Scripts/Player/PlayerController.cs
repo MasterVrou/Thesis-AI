@@ -7,6 +7,7 @@ public class PlayerController : ParentController
     [SerializeField]
     private Transform bossPos;
 
+
     private PlayerAnimationController pAnimController;
     private BoxCollider2D hitbox;
 
@@ -52,17 +53,17 @@ public class PlayerController : ParentController
 
         UpdateAnimations();
         //////////////////////////////////////////////uncomment after training
-        CheckInput();
+        //CheckInput();
         CheckSurroundings();
     }
 
     protected override void FixedUpdate()
     {
         //Training Methods
-        //AutoWalk();
+        AutoWalk();
 
         //////////////////////////////////////////////uncomment after training
-        Walk();
+        //Walk();
         CheckDodge();
         CheckHook();
     }
@@ -107,8 +108,8 @@ public class PlayerController : ParentController
             dodgeStartTime = Time.time;
             //////////////////////////////////////////////////////////inAnim
             pAnimController.SetInAnimation(true);
-            hitbox.enabled = false;
-            rb.gravityScale = 0;
+            //hitbox.enabled = false;
+            //rb.gravityScale = 0;
         }
     }
 
@@ -118,8 +119,8 @@ public class PlayerController : ParentController
         {
             isDodging = false;
             rb.velocity = new Vector2(0.0f, rb.velocity.y);
-            hitbox.enabled = true;
-            rb.gravityScale = 4;
+            //hitbox.enabled = true;
+            //rb.gravityScale = 4;
         }
         else if (isDodging)
         {
@@ -214,10 +215,6 @@ public class PlayerController : ParentController
 
     }
 
-    protected override void OnDrawGizmos()
-    {
-        Gizmos.DrawSphere(groundCheck.position, groundCheckRadius);
-    }
 
     //Getters
 
@@ -235,5 +232,11 @@ public class PlayerController : ParentController
     public void SetMovementDirection(int i)
     {
         movementDirection = i;
+    }
+
+
+    protected override void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(groundCheck.position, groundCheckRadius);
     }
 }

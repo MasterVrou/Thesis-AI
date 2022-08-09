@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using Newtonsoft.Json;
+using UnityEngine.UI;
 
 public class DataManagement : MonoBehaviour
 {
     [SerializeField]
     private GameObject player;
+    [SerializeField]
+    private Text score;
 
     Dictionary<PlayerState, BossAction> Qtable;
 
@@ -27,6 +30,8 @@ public class DataManagement : MonoBehaviour
     private float playerPos;
 
     private int distanceLabel;
+    private int playerWins;
+    private int bossWins;
 
     private bool updateOnce;
     private bool someoneAlive;
@@ -127,6 +132,9 @@ public class DataManagement : MonoBehaviour
         currentState.parry = Vector2Int.zero;
         currentState.distance = 1;
 
+        playerWins = 0;
+        bossWins = 0;
+
         Qtable = new Dictionary<PlayerState, BossAction>();
 
         QtableSetUp();
@@ -134,6 +142,8 @@ public class DataManagement : MonoBehaviour
 
         //Genetic algorithm stuff
         //GN.ResetNetwork(overallFitness);
+
+        score.text = playerWins.ToString() + " : " + bossWins.ToString();
     }
 
     private void Update()
@@ -143,6 +153,8 @@ public class DataManagement : MonoBehaviour
         //NN_Training();
         Q_Training();
         //LogPrint();
+
+        score.text = playerWins.ToString() + " : " + bossWins.ToString();
     }
 
     private void FixedUpdate()
@@ -225,11 +237,13 @@ public class DataManagement : MonoBehaviour
         {
             reward = winReward;
             playerDied = true;
+            bossWins++;
         }
         if (bController.GetCurrentHealth() <= 0)
         {
             reward = losePunishment;
             bossDied = true;
+            playerWins++;
         }
 
         overallFitness += reward/10;
@@ -303,11 +317,13 @@ public class DataManagement : MonoBehaviour
                 {
                     newQ = winReward;
                     playerDied = true;
+                    bossWins++;
                 }
                 if(bController.GetCurrentHealth() <= 0)
                 {
                     newQ = losePunishment;
                     bossDied = true;
+                    playerWins++;
                 }
                 else
                 {

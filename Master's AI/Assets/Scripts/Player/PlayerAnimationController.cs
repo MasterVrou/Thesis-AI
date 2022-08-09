@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerAnimationController : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class PlayerAnimationController : MonoBehaviour
     private Transform lightAttackHitBoxPos;
     [SerializeField]
     private Transform heavyAttackHitBoxPos;
+    [SerializeField]
+    private Text playerHP;
 
     [SerializeField]
     private LayerMask whatIsDamageable;
@@ -46,8 +49,10 @@ public class PlayerAnimationController : MonoBehaviour
         lightAttackDamage = 10;
         heavyAttackDamage = 17;
 
-        maxHealth = 70;
+        maxHealth = 100;
         currentHealth = maxHealth;
+
+        playerHP.text = currentHealth.ToString();
 
         inAnimation = false;
 
@@ -58,7 +63,12 @@ public class PlayerAnimationController : MonoBehaviour
         flDodge = false;
         flParry = false;
         flJump = false;
-}
+    }
+
+    private void Update()
+    {
+        playerHP.text = "playerHP: " + currentHealth.ToString();
+    }
 
     private void WalkingEnabled()
     {

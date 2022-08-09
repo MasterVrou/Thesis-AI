@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BossController : ParentController
 {
@@ -20,6 +21,8 @@ public class BossController : ParentController
     public GameObject hook;
     [SerializeField]
     private LayerMask whatIsPlayer;
+    [SerializeField]
+    private Text bossHP;
 
     private GameObject parentFirePillar;
     private GameObject pillarWarning;
@@ -114,6 +117,8 @@ public class BossController : ParentController
         pillar.SetActive(false);
 
         parentFirePillar.transform.position = new Vector3(playerPos.position.x, -1, playerPos.position.z);
+
+        bossHP.text = "bossHP: " + currentHealth.ToString();
     }
 
     protected override void Update()
@@ -129,6 +134,8 @@ public class BossController : ParentController
         //FirePillar();
         CheckDelay();
         CheckHook();
+
+        bossHP.text = "bossHP: " + currentHealth.ToString();
     }
 
     private void FixedUpdate()

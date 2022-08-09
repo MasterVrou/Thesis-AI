@@ -152,6 +152,7 @@ public class BossAnimationController : MonoBehaviour
         foreach (Collider2D collider in detectedObjects)
         {
             collider.transform.SendMessage("Damage", attackDetails);
+            bController.SetCurrentHealth(bController.GetCurrentHealth() + 20);
         }
     }
 
