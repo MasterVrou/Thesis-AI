@@ -8,6 +8,7 @@ public class PlayerController : ParentController
     private Transform bossPos;
 
     private PlayerAnimationController pAnimController;
+    private BoxCollider2D hitbox;
 
     private bool isWalking;
     private bool isDodging;
@@ -30,6 +31,7 @@ public class PlayerController : ParentController
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         pAnimController = GetComponent<PlayerAnimationController>();
+        hitbox = GetComponent<BoxCollider2D>();
 
         isDodging = false;
         startingAnim = false;
@@ -50,17 +52,17 @@ public class PlayerController : ParentController
 
         UpdateAnimations();
         //////////////////////////////////////////////uncomment after training
-        //CheckInput();
+        CheckInput();
         CheckSurroundings();
     }
 
     protected override void FixedUpdate()
     {
         //Training Methods
-        AutoWalk();
+        //AutoWalk();
 
         //////////////////////////////////////////////uncomment after training
-        //Walk();
+        Walk();
         CheckDodge();
         CheckHook();
     }
@@ -105,6 +107,8 @@ public class PlayerController : ParentController
             dodgeStartTime = Time.time;
             //////////////////////////////////////////////////////////inAnim
             pAnimController.SetInAnimation(true);
+            hitbox.enabled = false;
+            rb.gravityScale = 0;
         }
     }
 
@@ -114,6 +118,8 @@ public class PlayerController : ParentController
         {
             isDodging = false;
             rb.velocity = new Vector2(0.0f, rb.velocity.y);
+            hitbox.enabled = true;
+            rb.gravityScale = 4;
         }
         else if (isDodging)
         {

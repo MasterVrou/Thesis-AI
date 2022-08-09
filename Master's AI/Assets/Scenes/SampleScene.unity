@@ -163,7 +163,7 @@ GameObject:
   m_Component:
   - component: {fileID: 344866392}
   - component: {fileID: 344866393}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Warning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -721,7 +721,7 @@ GameObject:
   - component: {fileID: 591607276}
   - component: {fileID: 591607277}
   - component: {fileID: 591607278}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Pillar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1001,7 +1001,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 663523352}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: FirePillar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1540,7 +1540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 080907d22b1bcd743b1c3282e92d2206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeScale: 10
+  timeScale: 1
   boss: {fileID: 550971530}
 --- !u!1 &1854714140
 GameObject:

@@ -14,6 +14,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     private PlayerController pController;
     private PlayerCombat pCombat;
+    //private GUIStyle gui;
 
     private AttackDetails attackDetails;
 
@@ -247,4 +248,9 @@ public class PlayerAnimationController : MonoBehaviour
         Gizmos.DrawSphere(lightAttackHitBoxPos.position, lightAttackRadius);
         Gizmos.DrawSphere(heavyAttackHitBoxPos.position, heavyAttackRadius);
     }
+
+    //private void OnGUI()
+    //{
+    //    GUI.Label(new Rect(10, 10, 100, 20), currentHealth.ToString(), gui);
+    //}
 }

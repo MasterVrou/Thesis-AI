@@ -39,6 +39,8 @@ public class TrainingAI : MonoBehaviour
     {
         CheckSprites();
         MakeDicision();
+
+        Time.timeScale = timeScale;
     }
 
     private void CheckSprites()

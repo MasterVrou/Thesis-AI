@@ -54,6 +54,7 @@ public class BossAnimationController : MonoBehaviour
         CheckFirePillar();
         CheckFireball();
         CheckHook();
+        CheckFlip();
     }
 
     private void CheckFirePillar()
@@ -164,6 +165,18 @@ public class BossAnimationController : MonoBehaviour
         foreach (Collider2D collider in detectedObjects)
         {
             collider.transform.SendMessage("Damage", attackDetails);
+        }
+    }
+
+    private void CheckFlip()
+    {
+        if (inAction)
+        {
+            bController.SetCanFlip(false);
+        }
+        else
+        {
+            bController.SetCanFlip(true);
         }
     }
 

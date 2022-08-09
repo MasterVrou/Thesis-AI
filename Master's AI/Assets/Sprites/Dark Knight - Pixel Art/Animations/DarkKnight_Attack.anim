@@ -106,6 +106,13 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
+  - time: 0
+    functionName: CannotFlip
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 0.41666666
     functionName: CheckMeleeAttackHitBox
     data: 
@@ -122,6 +129,13 @@ AnimationClip:
     messageOptions: 0
   - time: 0.9166667
     functionName: ActionFinished
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.9166667
+    functionName: CanFlip
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

@@ -45,7 +45,7 @@ public class BossController : ParentController
     private bool isDelayed;
     private bool chargeDamageOnce;
     private bool isAOEing;
-    
+    private bool canFlipBool;
     
     private float maxHealth;
     private float chargeStartTime;
@@ -87,6 +87,7 @@ public class BossController : ParentController
         isDelayed = false;
         isHooking = false;
         isAOEing = false;
+        canFlipBool = true;
 
         once = false;
         damageOnce = false;
@@ -181,6 +182,7 @@ public class BossController : ParentController
             isFirePillaring = true;
             firePillarStartTime = Time.time;
             pillarWarning.SetActive(true);
+            canFlipBool = false;
         }
     }
 
@@ -190,7 +192,7 @@ public class BossController : ParentController
         {
             pillar.SetActive(true);
             pillarTriggered = true;
-
+            
             if (!damageOnce)
             {
                 pillarTriggeredStartTime = Time.time;
@@ -209,8 +211,9 @@ public class BossController : ParentController
                     pillarHit.transform.SendMessage("Damage", a);
                 }
             }
+            canFlipBool = true;
         }
-
+        
 
     }
 
@@ -221,6 +224,7 @@ public class BossController : ParentController
             Instantiate(fireball, transform.position, Quaternion.identity);
             fireballStartTime = Time.time;
             isFireBalling = true;
+            canFlipBool = false;
         }
     }
 
@@ -229,6 +233,7 @@ public class BossController : ParentController
         if (fireballStartTime + fireballDuration < Time.time)
         {
             isFireBalling = false;
+            canFlipBool = true;
         }
     }
 
@@ -240,6 +245,7 @@ public class BossController : ParentController
             hookStartTime = Time.time;
             isHooking = true;
             anim.SetBool("isHooking", isHooking);
+            canFlipBool = false;
         }
     }
 
@@ -252,6 +258,7 @@ public class BossController : ParentController
             anim.SetBool("isHooking", isHooking);
             anim.SetBool("isAOEing", isAOEing);
             AOEStartTime = Time.time;
+            canFlipBool = true;
         }
     }
 
@@ -302,6 +309,7 @@ public class BossController : ParentController
         chargeStartTime = Time.time;
         anim.SetInteger("AnimState", 1);
         isCharging = true;
+        canFlipBool = false;
 
         if (this.transform.position.x < playerPos.position.x)
         {
@@ -339,6 +347,7 @@ public class BossController : ParentController
                         chargeDamageOnce = true;
                     }
                 }
+                canFlipBool = true;
             }
 
             if (Time.time > chargeStartTime + chargeDuration && isCharging)
@@ -432,16 +441,31 @@ public class BossController : ParentController
         Gizmos.DrawSphere(groundCheck.position, groundCheckRadius);
     }
 
+    private void CanFlip()
+    {
+        canFlipBool = true;
+    }
+
+    private void CannotFlip()
+    {
+        canFlipBool = false;
+    }
+
+
     private void CheckDirection()
     {
-        if (playerPos.position.x < this.transform.position.x)
+        if (canFlipBool)
         {
-            movementDirection = -1;
+            if (playerPos.position.x < this.transform.position.x)
+            {
+                movementDirection = -1;
+            }
+            else if (playerPos.position.x > this.transform.position.x)
+            {
+                movementDirection = 1;
+            }
         }
-        else if (playerPos.position.x > this.transform.position.x)
-        {
-            movementDirection = 1;
-        }
+        
     }
 
     //Getters
@@ -502,5 +526,10 @@ public class BossController : ParentController
     public void SetIsBlocking(bool b)
     {
         isBlocking = b;
+    }
+
+    public void SetCanFlipBool(bool b)
+    {
+        canFlipBool = b;
     }
 }

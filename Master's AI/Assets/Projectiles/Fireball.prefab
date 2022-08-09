@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2998653089199506241}
   - component: {fileID: 3294268128860572912}
   - component: {fileID: 911639758437996057}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Fireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,6 @@ MonoBehaviour:
     m_Bits: 8
   damagePosition: {fileID: 6342266560112440786}
   damageRadius: 0.47
-  player: {fileID: 0}
 --- !u!1 &3264012678733255913
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,7 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6342266560112440786}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DamagePos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
