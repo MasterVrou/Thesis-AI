@@ -13,7 +13,7 @@ public class GenAlgorithm : MonoBehaviour
     public int worstAgentSelection = 3;
     public int numberToCrossover;
 
-    public int layers = 2;
+    public int layers = 1;
     public int neurals = 10;
 
     private List<int> genePool = new List<int>();
@@ -254,5 +254,10 @@ public class GenAlgorithm : MonoBehaviour
             newPopulationArray[startingIndex].Initialise(layers, neurals);
             startingIndex++;
         }
+    }
+
+    public int GetGeneration()
+    {
+        return currentGeneration;
     }
 }

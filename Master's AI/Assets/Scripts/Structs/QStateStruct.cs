@@ -12,7 +12,7 @@ public struct PlayerState
     public Vector2Int defJump;
     public Vector2Int dodge;
     public Vector2Int parry;
-    public int distance;//something for position maybe a close/mid/far label
+    public int distance;
 
     
     //give info about where the player is facing

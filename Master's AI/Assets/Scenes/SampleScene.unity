@@ -828,7 +828,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1602761254}
   score: {fileID: 293790837}
-  textJSON: {fileID: 4900000, guid: 390658c17aa05224496c17961890947f, type: 3}
+  textJSON: {fileID: 4900000, guid: 6cfadcc77781fde4b9c040966008e654, type: 3}
+  sameMoveCounter: 0
   overallFitness: 0
   readLoadList:
     rlList: []
@@ -866,7 +867,7 @@ MonoBehaviour:
   bestAgentSelection: 8
   worstAgentSelection: 3
   numberToCrossover: 39
-  layers: 2
+  layers: 1
   neurals: 10
   currentGeneration: 0
   currentGenomeIter: 0
@@ -1846,7 +1847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 080907d22b1bcd743b1c3282e92d2206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeScale: 1
+  timeScale: 8.6
   boss: {fileID: 550971530}
 --- !u!1 &1854714140
 GameObject:

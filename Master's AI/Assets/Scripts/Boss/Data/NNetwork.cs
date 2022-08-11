@@ -5,7 +5,6 @@ using System.IO;
 using Newtonsoft.Json;
 
 using MathNet.Numerics.LinearAlgebra;
-//using System;
 
 public class NNetwork : MonoBehaviour
 {
@@ -155,8 +154,6 @@ public class NNetwork : MonoBehaviour
             }
         }
 
-        
-
         return net;
     }
 
@@ -191,13 +188,13 @@ public class NNetwork : MonoBehaviour
         BossAction action;
 
         //I need clear numbers for these
-        action.block = Sigmoid(outputLayer[0, 0]);
-        action.charge = Sigmoid(outputLayer[0, 1]);
-        action.fireAttack = Sigmoid(outputLayer[0, 2]);
-        action.meleeAttack = Sigmoid(outputLayer[0, 3]);
-        action.fireball = Sigmoid(outputLayer[0, 4]);
-        action.firepillar = Sigmoid(outputLayer[0, 5]);
-        action.hook = Sigmoid(outputLayer[0, 6]);
+        action.block = (float)System.Math.Tanh(outputLayer[0, 0]);
+        action.charge = (float)System.Math.Tanh(outputLayer[0, 1]);
+        action.fireAttack = (float)System.Math.Tanh(outputLayer[0, 2]);
+        action.meleeAttack = (float)System.Math.Tanh(outputLayer[0, 3]);
+        action.fireball = (float)System.Math.Tanh(outputLayer[0, 4]);
+        action.firepillar = (float)System.Math.Tanh(outputLayer[0, 5]);
+        action.hook = (float)System.Math.Tanh(outputLayer[0, 6]);
 
         return action;
     }

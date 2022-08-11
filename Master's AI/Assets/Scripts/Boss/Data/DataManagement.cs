@@ -32,12 +32,14 @@ public class DataManagement : MonoBehaviour
     private int distanceLabel;
     private int playerWins;
     private int bossWins;
+    public int sameMoveCounter;
 
     private bool updateOnce;
     private bool someoneAlive;
     private bool bossDied;
     private bool playerDied;
     private bool actionOnce;
+    private bool trainning;
 
     private string boss;
 
@@ -74,6 +76,7 @@ public class DataManagement : MonoBehaviour
     private float losePunishment;
 
     private string fAction;
+    private string lastMove;
 
     //maybe add reward for walking closer to player
 
@@ -94,13 +97,13 @@ public class DataManagement : MonoBehaviour
 
         hitPlayerReward = 10;
         blockPlayerReward = 10;
-        goodBlockReward = 20;
+        goodBlockReward = 10;
         winReward = 100;
-        missPlayerPunishment = -10;
-        missBlockPunishment = -5;
+        missPlayerPunishment = -5;
+        missBlockPunishment = -3;
         losePunishment = -100;
 
-        epsilon = 0.8f;
+        epsilon = 0.2f;
         epsilonDecay = 0.9998f;
         learningRate = 0.1f;
         discount = 0.95f;
@@ -116,13 +119,14 @@ public class DataManagement : MonoBehaviour
 
         GN = GetComponent<GenAlgorithm>();
         NN = GetComponent<NNetwork>();
-        NN.Initialise(2, 10);
+        NN.Initialise(1, 10);
 
         updateOnce = false;
         someoneAlive = true;
         actionOnce = false;
         bossDied = false;
         playerDied = false;
+        trainning = true;
 
         currentState.lightAttack = Vector2Int.zero;
         currentState.heavyAttack = Vector2Int.zero;
@@ -134,6 +138,9 @@ public class DataManagement : MonoBehaviour
 
         playerWins = 0;
         bossWins = 0;
+        sameMoveCounter = 0;
+
+        lastMove = "lol";
 
         Qtable = new Dictionary<PlayerState, BossAction>();
 
@@ -148,10 +155,11 @@ public class DataManagement : MonoBehaviour
 
     private void Update()
     {
+        CheckGeneration();
         UpdateDistanceLabel();
         UpdateCurrentState();
-        //NN_Training();
-        Q_Training();
+        NN_Training();
+        //Q_Training();
         //LogPrint();
 
         score.text = playerWins.ToString() + " : " + bossWins.ToString();
@@ -164,45 +172,70 @@ public class DataManagement : MonoBehaviour
 
     private void NN_Training()
     {
-        if(!bossDied && !playerDied)
+        if (trainning)
         {
-            if(!bAnimController.GetInAction() && !actionOnce)
-            {   
-                BestAction(NN.RunNetwork(currentState));
-                nextAction = fAction;
-
-                float hpBefore = pAnimController.GetCurrentHP();
-
-                UpdateBossForm();
-                if (boss == "Knight")
+            if (!bossDied && !playerDied)
+            {
+                if (!bAnimController.GetInAction() && !actionOnce)
                 {
-                    bController.SetKnightAction(nextAction);
-                }
-                else if (boss == "Mage")
-                {
-                    bController.SetMageAction(nextAction);
-                }
-                else if(boss == "Warlock")
-                {
-                    bController.SetWarlockAction(nextAction);
+                    BossAction a = NN.RunNetwork(currentState);
+                    BestAction(a);
+                    nextAction = fAction;
+
+                    if(lastMove == nextAction)
+                    {
+                        sameMoveCounter++;
+
+                        if(sameMoveCounter > 5)
+                        {
+                            bossDied = true;
+                            sameMoveCounter = 0;
+                        }
+                    }
+                    else
+                    {
+                        sameMoveCounter = 0;
+                    }
+
+                    //Debug.Log("block " + a.block + ", meleeAttack " + a.meleeAttack + ", fireAttack" + a.fireAttack);
+
+                    float hpBefore = pAnimController.GetCurrentHP();
+
+                    UpdateBossForm();
+                    if (boss == "Knight")
+                    {
+                        bController.SetKnightAction(nextAction);
+                    }
+                    else if (boss == "Mage")
+                    {
+                        bController.SetMageAction(nextAction);
+                    }
+                    else if (boss == "Warlock")
+                    {
+                        bController.SetWarlockAction(nextAction);
+                    }
+
+                    CalculateFitness(hpBefore);
+
+
+                    if (bAnimController.GetInAction() && actionOnce)
+                    {
+                        actionOnce = false;
+                    }
                 }
 
-                CalculateFitness(hpBefore);
-
-                if (bAnimController.GetInAction() && actionOnce)
-                {
-                    actionOnce = false;
-                }
             }
-        }
-        else
-        {
-            bossDied = false;
-            playerDied = false;
-            bController.Respawn();
-            pAnimController.Respawn();
-            NN = GN.ResetNetwork(overallFitness);
-            overallFitness = 0;
+            else
+            {
+                bossDied = false;
+                playerDied = false;
+                bController.Respawn();
+                pAnimController.Respawn();
+                NN = GN.ResetNetwork(overallFitness);
+                overallFitness = 0;
+            }
+
+            lastMove = nextAction;
         }
     }
 
@@ -245,6 +278,9 @@ public class DataManagement : MonoBehaviour
             bossDied = true;
             playerWins++;
         }
+        //////////////////////////////////////////////////////////////Update Qtable/////////////////////////
+        newQ = (float)System.Math.Tanh(reward);
+        UpdateQtable();
 
         overallFitness += reward/10;
     }
@@ -331,8 +367,8 @@ public class DataManagement : MonoBehaviour
                     //newQvalue = (1 - learningRate) * currentMaxQvalue + learningRate * (stepReward + discount * nextMaxQvalue);
                     newQ = currentQ + learningRate * (stepReward + discount * fMax - currentQ);
                 }
+                newQ = (float)System.Math.Tanh(newQ);
 
-                
             }
 
             //if step is over
@@ -448,8 +484,7 @@ public class DataManagement : MonoBehaviour
         }
     }
 
-    public ReadLoadList readLoadList = new ReadLoadList();
-    public static string fileName = "/text.json";
+    
     private void QtableSetUp()
     {
         string fullPath = Application.dataPath + "/text.json";
@@ -460,7 +495,6 @@ public class DataManagement : MonoBehaviour
         else
         {
             PlayerState ps;
-            ReadLoad rl;
 
             for (int liA = 0; liA < 4; liA++)
             {
@@ -499,11 +533,56 @@ public class DataManagement : MonoBehaviour
         //LoadFromJson();
     }
 
+    private void CheckGeneration()
+    {
+        if (GN.GetGeneration() == 500)
+        {
+            trainning = false;
+            SaveToJSON();
+            Application.Quit();
+
+            
+        }
+    }
+
+
+    public ReadLoadList readLoadList = new ReadLoadList();
+    public static string fileName = "/text.json";
     private void SaveToJSON()
     {
+        readLoadList.rlList.Clear();
+        ReadLoad rl;
+
+        foreach (KeyValuePair<PlayerState, BossAction> entry in Qtable)
+        {
+            rl.lightAttack1 = entry.Key.lightAttack.x;
+            rl.lightAttack2 = entry.Key.lightAttack.y;
+            rl.heavyAttack1 = entry.Key.heavyAttack.x;
+            rl.heavyAttack2 = entry.Key.heavyAttack.y;
+            rl.offJump1 = entry.Key.offJump.x;
+            rl.offJump2 = entry.Key.offJump.y;
+            rl.defJump1 = entry.Key.defJump.x;
+            rl.defJump2 = entry.Key.defJump.y;
+            rl.dodge1 = entry.Key.dodge.x;
+            rl.dodge2 = entry.Key.dodge.y;
+            rl.parry1 = entry.Key.parry.x;
+            rl.parry2 = entry.Key.parry.y;
+            rl.distance = entry.Key.distance;
+
+            rl.meleeAttack = entry.Value.meleeAttack;
+            rl.fireAttack = entry.Value.fireAttack;
+            rl.block = entry.Value.block;
+            rl.charge = entry.Value.charge;
+            rl.firepillar = entry.Value.firepillar;
+            rl.fireball = entry.Value.fireball;
+            rl.hook = entry.Value.hook;
+
+            readLoadList.rlList.Add(rl);
+        }
+
         string strOutput = JsonConvert.SerializeObject(readLoadList, Formatting.Indented);
 
-        readLoadList.rlList.Clear();
+        
 
         File.WriteAllText(Application.dataPath + "/text.json", strOutput);
     }
