@@ -49,6 +49,7 @@ public class BossController : ParentController
     private bool chargeDamageOnce;
     private bool isAOEing;
     private bool canFlipBool;
+    private bool fireballOnce;
     
     private float maxHealth;
     private float chargeStartTime;
@@ -66,6 +67,7 @@ public class BossController : ParentController
     private float hookDuration;
     private float AOEDuration;
     private float AOEStartTime;
+    private float fireballDelay;
 
     public float currentHealth;
     public float chargeSpeed;
@@ -91,6 +93,7 @@ public class BossController : ParentController
         isHooking = false;
         isAOEing = false;
         canFlipBool = true;
+        fireballOnce = false;
 
         once = false;
         damageOnce = false;
@@ -108,7 +111,8 @@ public class BossController : ParentController
         fireballDuration = 1;
         chargeDelayDuration = 0.7f;
         hookDuration = 1.5f;
-        AOEDuration = 1; 
+        AOEDuration = 1;
+        fireballDelay = 0.6f;
 
         parentFirePillar = transform.Find("FirePillar").gameObject;
         pillarWarning = parentFirePillar.transform.Find("Warning").gameObject;
@@ -134,6 +138,7 @@ public class BossController : ParentController
         //FirePillar();
         CheckDelay();
         CheckHook();
+        FireballDelayCheck();
 
         bossHP.text = "bossHP: " + currentHealth.ToString();
     }
@@ -213,7 +218,7 @@ public class BossController : ParentController
                 if (pillarHit)
                 {
                     AttackDetails a;
-                    a.damageAmount = 20;
+                    a.damageAmount = 21;
                     a.position = parentFirePillar.transform.position;
                     pillarHit.transform.SendMessage("Damage", a);
                 }
@@ -228,18 +233,27 @@ public class BossController : ParentController
     {
         if (!isFireBalling)
         {
-            Instantiate(fireball, transform.position, Quaternion.identity);
             fireballStartTime = Time.time;
             isFireBalling = true;
             canFlipBool = false;
         }
     }
 
+    private void FireballDelayCheck()
+    {
+        if(fireballStartTime + fireballDelay < Time.time && isFireBalling && !fireballOnce)
+        {
+            Instantiate(fireball, transform.position, Quaternion.identity);
+            fireballOnce = true;
+        }
+    }
+
     private void CheckFireball()
     {
-        if (fireballStartTime + fireballDuration < Time.time)
+        if (fireballStartTime + fireballDuration < Time.time && isFireBalling)
         {
             isFireBalling = false;
+            fireballOnce = false;
             canFlipBool = true;
         }
     }
@@ -519,6 +533,7 @@ public class BossController : ParentController
     {
         return isAOEing;
     }
+
     //Setters
     public void SetCurrentHealth(float hp)
     {

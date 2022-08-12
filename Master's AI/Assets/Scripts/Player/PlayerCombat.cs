@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject arc;
+    [SerializeField]
+    private Transform rangePos;
+
     private PlayerAnimationController pAnimController;
     private PlayerController PC;
     private Animator anim;
@@ -16,6 +21,7 @@ public class PlayerCombat : MonoBehaviour
     private float lightAttackRadius;
     private float heavyAttackDamage;
     private float heavyAttackRadius;
+    private float rangeAttackStartTimer;
 
     private bool gotInput;
     private bool gotLightInput;
@@ -24,6 +30,7 @@ public class PlayerCombat : MonoBehaviour
     private bool isLightAttacking;
     private bool isHeavyAttacking;
     private bool isShielded;
+    private bool isRangeAttacking;
 
     private bool startingAnim;
 
@@ -39,6 +46,7 @@ public class PlayerCombat : MonoBehaviour
         isLightAttacking = false;
         isHeavyAttacking = false;
         isShielded = false;
+        isRangeAttacking = false;
 
         startingAnim = false;
     }
@@ -60,6 +68,7 @@ public class PlayerCombat : MonoBehaviour
         anim.SetBool("isHeavyAttacking", isHeavyAttacking);
         anim.SetBool("isAttacking", isAttacking);
         anim.SetBool("isShielded", isShielded);
+        anim.SetBool("isRangeAttacking", isRangeAttacking);
     }
 
     private void CheckCombatInput()
@@ -74,10 +83,32 @@ public class PlayerCombat : MonoBehaviour
             HeavyAttack();
         }
 
+        if(Input.GetMouseButtonDown(2) && PC.GetGrounded())
+        {
+            RangeAttack();
+        }
+
         if (Input.GetKeyDown(KeyCode.E) && !isShielded)
         {
             Parry();
         }
+    }
+
+    public void RangeAttack()
+    {
+        if(!isAttacking && !isRangeAttacking)
+        {
+            gotInput = false;
+            isAttacking = true;
+            isRangeAttacking = true;
+
+            pAnimController.SetInAnimation(true);
+        }
+    }
+
+    private void SpawnArc()
+    {
+        Instantiate(arc, rangePos.position, Quaternion.identity);
     }
 
     public void Parry()
@@ -144,5 +175,10 @@ public class PlayerCombat : MonoBehaviour
     public void SetIsHeavyAttacking(bool b)
     {
         isHeavyAttacking = b;
+    }
+
+    public void SetIsRangeAttacking(bool b)
+    {
+        isRangeAttacking = b;
     }
 }

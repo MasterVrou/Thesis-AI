@@ -5,7 +5,7 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField]
-    private LayerMask whatIsPlayer;
+    private LayerMask whatIsEnemy;
     [SerializeField]
     private Transform damagePosition;
     [SerializeField]
@@ -45,16 +45,19 @@ public class Projectile : MonoBehaviour
 
     private void Update()
     {
+        
         CheckPlayerPos();
+        
+        
         attackDetails.position = transform.position;
 
     }
 
     private void FixedUpdate()
     {
-        Collider2D projectileHit = Physics2D.OverlapCircle(damagePosition.position, damageRadius, whatIsPlayer);
+        Collider2D projectileHit = Physics2D.OverlapCircle(damagePosition.position, damageRadius, whatIsEnemy);
 
-        if(this.transform.name == "Fireball(Clone)")
+        if(this.transform.name == "Fireball(Clone)" || this.transform.name == "Arc(Clone)")
         {
             attackDetails.damageAmount = 10;
             DamageEnemy(projectileHit);
@@ -64,9 +67,11 @@ public class Projectile : MonoBehaviour
             attackDetails.damageAmount = 11;
             HookEnemy(projectileHit);
         }
+        
 
         rb.velocity = new Vector2(direction * speed, rb.velocity.y);
     }
+
 
     private void HookEnemy(Collider2D projectileHit)
     {
@@ -94,7 +99,7 @@ public class Projectile : MonoBehaviour
             Destroy();
         }
 
-        if (Mathf.Abs(xStartPos - transform.position.x) >= 10)
+        if (Mathf.Abs(xStartPos - transform.position.x) >= 12)
         {
             if (!flipOnce)
             {
@@ -125,7 +130,7 @@ public class Projectile : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (Mathf.Abs(xStartPos - transform.position.x) >= 10)
+        if (Mathf.Abs(xStartPos - transform.position.x) >= 8)
         {
             Destroy(gameObject);
         }
@@ -145,6 +150,18 @@ public class Projectile : MonoBehaviour
             {
                 direction = 1;
             }
+
+            if(this.transform.name == "Arc(Clone)")
+            {
+                PlayerController PC = player.GetComponent<PlayerController>();
+                direction = PC.GetDirection();
+                
+                if(direction == -1)
+                {
+                    sb.flipX = !sb.flipX;
+                }
+            }
+            
         }
     }
         

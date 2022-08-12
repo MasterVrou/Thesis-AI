@@ -8,8 +8,8 @@ public struct PlayerState
 {
     public Vector2Int lightAttack;
     public Vector2Int heavyAttack;
-    public Vector2Int offJump;
-    public Vector2Int defJump;
+    public Vector2Int rangeAttack;
+    public Vector2Int jump;
     public Vector2Int dodge;
     public Vector2Int parry;
     public int distance;
@@ -36,10 +36,10 @@ public struct ReadLoad
     public int lightAttack2;
     public int heavyAttack1;
     public int heavyAttack2;
-    public int offJump1;
-    public int offJump2;
-    public int defJump1;
-    public int defJump2;
+    public int rangeAttack1;
+    public int rangeAttack2;
+    public int jump1;
+    public int jump2;
     public int dodge1;
     public int dodge2;
     public int parry1;

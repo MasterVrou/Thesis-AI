@@ -53,17 +53,17 @@ public class PlayerController : ParentController
 
         UpdateAnimations();
         //////////////////////////////////////////////uncomment after training
-        //CheckInput();
+        CheckInput();
         CheckSurroundings();
     }
 
     protected override void FixedUpdate()
     {
         //Training Methods
-        AutoWalk();
+        //AutoWalk();
 
         //////////////////////////////////////////////uncomment after training
-        //Walk();
+        Walk();
         CheckDodge();
         CheckHook();
     }
@@ -217,6 +217,29 @@ public class PlayerController : ParentController
 
 
     //Getters
+
+    public int GetDirection()
+    {
+        if (isFacingRight)
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
+        
+    }
+
+    public bool GetIsDodging()
+    {
+        return isDodging;
+    }
+
+    public bool GetIsGrounded()
+    {
+        return isGrounded;
+    }
 
     //Setters
     public void setCanWalk(bool b)

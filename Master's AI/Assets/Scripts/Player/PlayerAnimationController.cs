@@ -46,7 +46,7 @@ public class PlayerAnimationController : MonoBehaviour
         pController = GetComponent<PlayerController>();
         pCombat = GetComponent<PlayerCombat>();
 
-        lightAttackDamage = 10;
+        lightAttackDamage = 8;
         heavyAttackDamage = 17;
 
         maxHealth = 100;
@@ -121,6 +121,12 @@ public class PlayerAnimationController : MonoBehaviour
         pCombat.SetIsLightAttacking(false);
     }
 
+    private void FinishRangeAttack()
+    {
+        pCombat.SetIsAttacking(false);
+        pCombat.SetIsRangeAttacking(false);
+    }
+
     private void FinishHeavyAttack()
     {
         pCombat.SetIsAttacking(false);
@@ -129,8 +135,8 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void Damage(AttackDetails ad)
     {
-        //do the shield negation later
-        if (pCombat.GetIsShielded())
+        //20 damage means that boss used fireattack
+        if (pCombat.GetIsShielded() && ad.damageAmount != 20)
         {
             if((ad.position.x > this.transform.position.x && pController.GetIsFacingRight())
                 || (ad.position.x < this.transform.position.x && !pController.GetIsFacingRight()))
@@ -165,6 +171,11 @@ public class PlayerAnimationController : MonoBehaviour
     private void UsedHeavy()
     {
         lastMove = "heavy";
+    }
+
+    private void UsedRanged()
+    {
+        lastMove = "range";
     }
 
     private void UsedDodge()

@@ -15,8 +15,8 @@ public class BossAnimationController : MonoBehaviour
     private LayerMask whatIsPlayer;
 
     
-
     private BossController bController;
+    private DataManagement DM;
 
     private AttackDetails attackDetails;
 
@@ -37,6 +37,7 @@ public class BossAnimationController : MonoBehaviour
     private void Start()
     {
         bController = GetComponent<BossController>();
+        DM = GetComponent<DataManagement>();
 
         meleeAttackDamage = 15;
         fireAttackDamage = 20;
@@ -117,13 +118,13 @@ public class BossAnimationController : MonoBehaviour
     {
         float hp = bController.GetCurrentHealth();
 
-        if (!bController.GetIsBlocking())
+        if (bController.GetIsBlocking() || (ad.damageAmount == 10 && DM.GetBoss() == "Knight"))
         {
-            hp -= ad.damageAmount;
+            damageBlocked = true;
         }
         else
         {
-            damageBlocked = true;
+            hp -= ad.damageAmount;
         }
 
         bController.SetCurrentHealth(hp);

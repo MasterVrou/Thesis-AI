@@ -163,10 +163,10 @@ public class NNetwork : MonoBehaviour
         inputLayer[0, 1] = PS.lightAttack.y;
         inputLayer[0, 2] = PS.heavyAttack.x;
         inputLayer[0, 3] = PS.heavyAttack.y;
-        inputLayer[0, 4] = PS.offJump.x;
-        inputLayer[0, 5] = PS.offJump.y;
-        inputLayer[0, 6] = PS.defJump.x;
-        inputLayer[0, 7] = PS.defJump.y;
+        inputLayer[0, 4] = PS.rangeAttack.x;
+        inputLayer[0, 5] = PS.rangeAttack.y;
+        inputLayer[0, 6] = PS.jump.x;
+        inputLayer[0, 7] = PS.jump.y;
         inputLayer[0, 8] = PS.dodge.x;
         inputLayer[0, 9] = PS.dodge.y;
         inputLayer[0, 10] = PS.parry.x;

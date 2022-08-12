@@ -18,6 +18,12 @@ public class TrainingAI : MonoBehaviour
     private float nextActionTime;
     private float skillPeriod;
     private float walkPeriod;
+    private float runAwayDuration;
+    private float runAwayStartTime;
+
+    public bool isScared;
+    private bool isRunningAway;
+    private bool runOnce;
 
     private int distanceLabel;
 
@@ -33,12 +39,20 @@ public class TrainingAI : MonoBehaviour
         skillPeriod = 0.8f;
         walkPeriod = 0.1f;
         Time.timeScale = timeScale;
+
+        isScared = false;
+        isRunningAway = true;
+        runOnce = false;
+
+
+        runAwayDuration = 1f;
     }
     
     private void Update()
     {
         CheckSprites();
         MakeDicision();
+        CheckRunning();
 
         Time.timeScale = timeScale;
     }
@@ -64,20 +78,37 @@ public class TrainingAI : MonoBehaviour
     {
         distanceLabel = bData.GetDistanceLabel();
 
-        if (Mathf.Abs(distanceLabel) == 1)
+        if (!isScared)
         {
-            if (Time.time > (nextActionTime * timeScale))
+            if (Mathf.Abs(distanceLabel) == 1)
             {
-                nextActionTime += skillPeriod / timeScale;
-                pController.SetIsWalking(false);
-                ChooseSkill();
+                if (Time.time > (nextActionTime * timeScale))
+                {
+                    nextActionTime += skillPeriod / timeScale;
+                    pController.SetIsWalking(false);
+                    ChooseSkillOffensive();
+                }
+            }
+            else
+            {
+                pController.SetIsWalking(true);
+                CloseDistance();
             }
         }
         else
         {
+            StartRunning();
             pController.SetIsWalking(true);
-            CloseDistance();
+            if (bData.transform.position.x > this.transform.position.x)
+            {
+                pController.SetMovementDirection(-1);
+            }
+            else
+            {
+                pController.SetMovementDirection(1);
+            }
         }
+            
     }
 
     private void CloseDistance()
@@ -111,7 +142,35 @@ public class TrainingAI : MonoBehaviour
         }
     }
 
-    private void ChooseSkill()
+    private void StartRunning()
+    {
+        if (!runOnce)
+        {
+            runOnce = true;
+            runAwayStartTime = Time.time;
+            isRunningAway = true;
+            
+
+            
+        }
+        
+        
+    }
+
+    private void CheckRunning()
+    {
+        if((runAwayStartTime + runAwayDuration) * timeScale < Time.time && isRunningAway)
+        {
+            pController.SetIsWalking(false);
+            isRunningAway = false;
+            pCombat.RangeAttack();
+            isScared = false;
+            runOnce = false;
+            nextActionTime = (Time.time + skillPeriod) / timeScale;
+        }
+    }
+
+    private void ChooseSkillOffensive()
     {
         
         if (Random.Range(0, 10) <= 3)
@@ -121,6 +180,10 @@ public class TrainingAI : MonoBehaviour
             if (r == 0)
             {
                 pController.Jump();
+                if (Random.Range(0, 2) == 0)
+                {
+                    isScared = true;
+                }
             }
             else if (r == 1)
             {
@@ -129,6 +192,10 @@ public class TrainingAI : MonoBehaviour
             else
             {
                 pCombat.Parry();
+                if (Random.Range(0, 2) == 0)
+                {
+                    isScared = true;
+                }
             }
         }
         else
@@ -142,6 +209,11 @@ public class TrainingAI : MonoBehaviour
             else
             {
                 pCombat.HeavyAttack();
+                if(Random.Range(0, 2) == 0)
+                {
+                    isScared = true;
+                }
+                
             }
         }
     }

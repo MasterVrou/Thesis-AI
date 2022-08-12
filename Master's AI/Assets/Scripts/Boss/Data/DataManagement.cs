@@ -130,8 +130,8 @@ public class DataManagement : MonoBehaviour
 
         currentState.lightAttack = Vector2Int.zero;
         currentState.heavyAttack = Vector2Int.zero;
-        currentState.offJump = Vector2Int.zero;
-        currentState.defJump = Vector2Int.zero;
+        currentState.rangeAttack = Vector2Int.zero;
+        currentState.jump = Vector2Int.zero;
         currentState.dodge = Vector2Int.zero;
         currentState.parry = Vector2Int.zero;
         currentState.distance = 1;
@@ -158,8 +158,8 @@ public class DataManagement : MonoBehaviour
         CheckGeneration();
         UpdateDistanceLabel();
         UpdateCurrentState();
-        NN_Training();
-        //Q_Training();
+        //NN_Training();
+        Q_Training();
         //LogPrint();
 
         score.text = playerWins.ToString() + " : " + bossWins.ToString();
@@ -379,7 +379,7 @@ public class DataManagement : MonoBehaviour
                 UpdateQtable();
                 stepCounter++;
                 Debug.Log("STEP " + stepCounter);
-                epsilon *= epsilonDecay;
+                //epsilon *= epsilonDecay;
             }
             
         }
@@ -504,18 +504,18 @@ public class DataManagement : MonoBehaviour
                     {
                         for (int dodge = 0; dodge < 4; dodge++)
                         {
-                            for (int offJ = 0; offJ < 4; offJ++)
+                            for (int offJ = 0; offJ < 4; offJ++)//rangeAttack
                             {
                                 for (int defJ = 0; defJ < 4; defJ++)
                                 {
-                                    for (int deL = 0; deL < 6; deL++)
+                                    for (int deL = 0; deL < 4; deL++)
                                     {
                                         ps.lightAttack = SkillEntry(liA);
                                         ps.heavyAttack = SkillEntry(heA);
                                         ps.parry = SkillEntry(parry);
                                         ps.dodge = SkillEntry(dodge);
-                                        ps.offJump = SkillEntry(offJ);
-                                        ps.defJump = SkillEntry(defJ);
+                                        ps.rangeAttack = SkillEntry(offJ);
+                                        ps.jump = SkillEntry(defJ);
                                         ps.distance = DisanceEntry(deL);
 
                                         BossAction bs = ActionRandomiser();
@@ -540,8 +540,6 @@ public class DataManagement : MonoBehaviour
             trainning = false;
             SaveToJSON();
             Application.Quit();
-
-            
         }
     }
 
@@ -559,10 +557,10 @@ public class DataManagement : MonoBehaviour
             rl.lightAttack2 = entry.Key.lightAttack.y;
             rl.heavyAttack1 = entry.Key.heavyAttack.x;
             rl.heavyAttack2 = entry.Key.heavyAttack.y;
-            rl.offJump1 = entry.Key.offJump.x;
-            rl.offJump2 = entry.Key.offJump.y;
-            rl.defJump1 = entry.Key.defJump.x;
-            rl.defJump2 = entry.Key.defJump.y;
+            rl.rangeAttack1 = entry.Key.rangeAttack.x;
+            rl.rangeAttack2 = entry.Key.rangeAttack.y;
+            rl.jump1 = entry.Key.jump.x;
+            rl.jump2 = entry.Key.jump.y;
             rl.dodge1 = entry.Key.dodge.x;
             rl.dodge2 = entry.Key.dodge.y;
             rl.parry1 = entry.Key.parry.x;
@@ -604,14 +602,14 @@ public class DataManagement : MonoBehaviour
                         {
                             for (int defJ = 0; defJ < 4; defJ++)
                             {
-                                for (int deL = 0; deL < 6; deL++)
+                                for (int deL = 0; deL < 4; deL++)
                                 {
                                     
                                     PlayerState ps;
                                     ps.lightAttack = new Vector2Int(readLoadList.rlList[iterator].lightAttack1, readLoadList.rlList[iterator].lightAttack2);
                                     ps.heavyAttack = new Vector2Int(readLoadList.rlList[iterator].heavyAttack1, readLoadList.rlList[iterator].heavyAttack2);
-                                    ps.offJump = new Vector2Int(readLoadList.rlList[iterator].offJump1, readLoadList.rlList[iterator].offJump2);
-                                    ps.defJump = new Vector2Int(readLoadList.rlList[iterator].defJump1, readLoadList.rlList[iterator].defJump2);
+                                    ps.rangeAttack = new Vector2Int(readLoadList.rlList[iterator].rangeAttack1, readLoadList.rlList[iterator].rangeAttack2);
+                                    ps.jump = new Vector2Int(readLoadList.rlList[iterator].jump1, readLoadList.rlList[iterator].jump2);
                                     ps.dodge = new Vector2Int(readLoadList.rlList[iterator].dodge1, readLoadList.rlList[iterator].dodge2);
                                     ps.parry = new Vector2Int(readLoadList.rlList[iterator].parry1, readLoadList.rlList[iterator].parry2);
                                     ps.distance = readLoadList.rlList[iterator].distance;
@@ -677,28 +675,21 @@ public class DataManagement : MonoBehaviour
     {
         if(i == 0)
         {
-            return -3;
+            return -2;
         }
         else if(i == 1)
         {
-            return -2;
+            return -1;
         }
         else if(i == 2)
         {
-            return -1;
-        }
-        else if(i == 3)
-        {
             return 1;
-        }
-        else if(i == 4)
-        {
-            return 2;
         }
         else
         {
-            return 3;
+            return 2;
         }
+        
     }
 
     private void LogPrint()
@@ -712,8 +703,8 @@ public class DataManagement : MonoBehaviour
             ps.heavyAttack = Vector2Int.zero;
             ps.parry = Vector2Int.zero;
             ps.dodge = Vector2Int.zero;
-            ps.offJump = Vector2Int.zero;
-            ps.defJump = Vector2Int.zero;
+            ps.rangeAttack = Vector2Int.zero;
+            ps.jump = Vector2Int.zero;
             ps.distance = 1;
             BossAction bs;
             bs.block = 0;
@@ -748,7 +739,7 @@ public class DataManagement : MonoBehaviour
             }
             return;
         }
-        else if (Mathf.Abs(distance) < 4)
+        else
         {
             if (distance >= 0)
             {
@@ -760,17 +751,7 @@ public class DataManagement : MonoBehaviour
             }
             return;
         }
-        else
-        {
-            if (distance >= 0)
-            {
-                distanceLabel = 3;
-            }
-            else
-            {
-                distanceLabel = -3;
-            }
-        }
+        
     }
 
     private void UpdateCurrentState()
@@ -794,20 +775,25 @@ public class DataManagement : MonoBehaviour
         {
             currentState.parry.x = 1;
         }
+        else if (pAnimController.GetLastMove() == "range")
+        {
+            currentState.rangeAttack.x = 1;
+        }
         else if(pAnimController.GetLastMove() == "jump")
         {
-            float bossPos = this.transform.position.x;
-            float sDist = pAnimController.GetSJump();
-            float fDist = pAnimController.GetFJump();
+            currentState.jump.x = 1;
+            //float bossPos = this.transform.position.x;
+            //float sDist = pAnimController.GetSJump();
+            //float fDist = pAnimController.GetFJump();
 
-            if(Mathf.Abs(bossPos - sDist) > Mathf.Abs(bossPos - fDist))
-            {
-                currentState.offJump.x = 1;
-            }
-            else
-            {
-                currentState.defJump.x = 1;
-            }
+            //if(Mathf.Abs(bossPos - sDist) > Mathf.Abs(bossPos - fDist))
+            //{
+            //    currentState.offJump.x = 1;
+            //}
+            //else
+            //{
+            //    currentState.defJump.x = 1;
+            //}
         }
     }
 
@@ -826,16 +812,16 @@ public class DataManagement : MonoBehaviour
         currentState.parry.y = currentState.parry.x;
         currentState.parry.x = 0;
 
-        currentState.defJump.y = currentState.defJump.x;
-        currentState.defJump.x = 0;
+        currentState.rangeAttack.y = currentState.rangeAttack.x;
+        currentState.rangeAttack.x = 0;
 
-        currentState.offJump.y = currentState.offJump.x;
-        currentState.offJump.x = 0;
+        currentState.jump.y = currentState.jump.x;
+        currentState.jump.x = 0;
     }
 
     private bool EqualsState(PlayerState a, PlayerState b)
     {
-        if(a.defJump==b.defJump && a.offJump==b.offJump && a.distance==b.distance && a.dodge==b.dodge && a.heavyAttack==b.heavyAttack && a.lightAttack == b.lightAttack && a.parry==b.parry)
+        if(a.jump==b.jump && a.rangeAttack==b.rangeAttack && a.distance==b.distance && a.dodge==b.dodge && a.heavyAttack==b.heavyAttack && a.lightAttack == b.lightAttack && a.parry==b.parry)
         {
             return true;
         }
@@ -913,5 +899,10 @@ public class DataManagement : MonoBehaviour
     public int GetDistanceLabel()
     {
         return distanceLabel;
+    }
+
+    public string GetBoss()
+    {
+        return boss;
     }
 }

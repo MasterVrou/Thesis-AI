@@ -342,3 +342,5 @@ C:\Users\maste\Desktop\Q-learning AI\Master's AI\obj\Debug\Assembly-CSharp.cspro
 C:\Users\maste\Desktop\Q-learning AI\Master's AI\obj\Debug\Assembly-CSharp.csproj.CopyComplete
 C:\Users\maste\Desktop\Q-learning AI\Master's AI\obj\Debug\Assembly-CSharp.dll
 C:\Users\maste\Desktop\Q-learning AI\Master's AI\obj\Debug\Assembly-CSharp.pdb
+C:\Users\maste\Desktop\Q-learning AI\Master's AI\Temp\Bin\Debug\MathNet.Numerics.dll
+C:\Users\maste\Desktop\Q-learning AI\Master's AI\Temp\Bin\Debug\MathNet.Numerics.xml
