@@ -95,18 +95,18 @@ public class DataManagement : MonoBehaviour
         stepTimer = 0;
         stepPeriod = 1;
 
-        hitPlayerReward = 10;
-        blockPlayerReward = 10;
-        goodBlockReward = 10;
-        winReward = 100;
-        missPlayerPunishment = -5;
-        missBlockPunishment = -3;
-        losePunishment = -100;
+        hitPlayerReward = 5;
+        blockPlayerReward = 7;
+        goodBlockReward = 7;
+        winReward = 10;
+        missPlayerPunishment = -2;
+        missBlockPunishment = -2;
+        losePunishment = -10;
 
-        epsilon = 0.2f;
-        epsilonDecay = 0.9998f;
-        learningRate = 0.1f;
-        discount = 0.95f;
+        epsilon = 0.1f;
+        //epsilonDecay = 0.9998f;
+        learningRate = 0.9f;
+        discount = 0.5f;
 
         currentQ = 0;
         newQ = 0;
@@ -158,8 +158,8 @@ public class DataManagement : MonoBehaviour
         CheckGeneration();
         UpdateDistanceLabel();
         UpdateCurrentState();
-        //NN_Training();
-        Q_Training();
+        NN_Training();
+        //Q_Training();
         //LogPrint();
 
         score.text = playerWins.ToString() + " : " + bossWins.ToString();
@@ -279,7 +279,7 @@ public class DataManagement : MonoBehaviour
             playerWins++;
         }
         //////////////////////////////////////////////////////////////Update Qtable/////////////////////////
-        newQ = (float)System.Math.Tanh(reward);
+        newQ = reward;
         UpdateQtable();
 
         overallFitness += reward/10;
@@ -355,7 +355,7 @@ public class DataManagement : MonoBehaviour
                     playerDied = true;
                     bossWins++;
                 }
-                if(bController.GetCurrentHealth() <= 0)
+                else if(bController.GetCurrentHealth() <= 0)
                 {
                     newQ = losePunishment;
                     bossDied = true;
@@ -365,10 +365,11 @@ public class DataManagement : MonoBehaviour
                 {
 
                     //newQvalue = (1 - learningRate) * currentMaxQvalue + learningRate * (stepReward + discount * nextMaxQvalue);
-                    newQ = currentQ + learningRate * (stepReward + discount * fMax - currentQ);
+                    //newQ = currentQ + learningRate * (stepReward + discount * fMax - currentQ);
                 }
-                newQ = (float)System.Math.Tanh(newQ);
-
+                newQ = currentQ + learningRate * (stepReward + discount * fMax - currentQ);
+                //newQ = (float)System.Math.Tanh(newQ);
+                Debug.Log("newQ = " + newQ);
             }
 
             //if step is over
@@ -378,7 +379,7 @@ public class DataManagement : MonoBehaviour
                 actionOnce = false;
                 UpdateQtable();
                 stepCounter++;
-                Debug.Log("STEP " + stepCounter);
+                //Debug.Log("STEP " + stepCounter);
                 //epsilon *= epsilonDecay;
             }
             
@@ -508,7 +509,7 @@ public class DataManagement : MonoBehaviour
                             {
                                 for (int defJ = 0; defJ < 4; defJ++)
                                 {
-                                    for (int deL = 0; deL < 4; deL++)
+                                    for (int deL = 0; deL < 3; deL++)
                                     {
                                         ps.lightAttack = SkillEntry(liA);
                                         ps.heavyAttack = SkillEntry(heA);
@@ -535,7 +536,7 @@ public class DataManagement : MonoBehaviour
 
     private void CheckGeneration()
     {
-        if (GN.GetGeneration() == 500)
+        if (GN.GetGeneration() == 200)
         {
             trainning = false;
             SaveToJSON();
@@ -602,7 +603,7 @@ public class DataManagement : MonoBehaviour
                         {
                             for (int defJ = 0; defJ < 4; defJ++)
                             {
-                                for (int deL = 0; deL < 4; deL++)
+                                for (int deL = 0; deL < 3; deL++)
                                 {
                                     
                                     PlayerState ps;
@@ -675,13 +676,9 @@ public class DataManagement : MonoBehaviour
     {
         if(i == 0)
         {
-            return -2;
+            return 0;
         }
         else if(i == 1)
-        {
-            return -1;
-        }
-        else if(i == 2)
         {
             return 1;
         }
@@ -689,7 +686,6 @@ public class DataManagement : MonoBehaviour
         {
             return 2;
         }
-        
     }
 
     private void LogPrint()
@@ -720,7 +716,7 @@ public class DataManagement : MonoBehaviour
 
     //go to player scripts and make variables that hold info for the skills used, or use the is.. booleans
 
-    //1 = close 2 = mid 3 = far, sign shows direction
+    //0 = close 1 = mid 2 = far, sign shows direction
     private void UpdateDistanceLabel()
     {
         playerPos = player.transform.position.x;
@@ -729,29 +725,43 @@ public class DataManagement : MonoBehaviour
 
         if (Mathf.Abs(distance) < 2.5)
         {
-            if (distance >= 0)
-            {
-                distanceLabel = 1;
-            }
-            else
-            {
-                distanceLabel = -1;
-            }
+            distanceLabel = 0;
             return;
+        }
+        else if(Mathf.Abs(distance) < 5.5)
+        {
+            distanceLabel = 1;
         }
         else
         {
-            if (distance >= 0)
-            {
-                distanceLabel = 2;
-            }
-            else
-            {
-                distanceLabel = -2;
-            }
-            return;
+            distanceLabel = 2;
         }
-        
+
+        //if (Mathf.Abs(distance) < 2.5)
+        //{
+        //    if (distance >= 0)
+        //    {
+        //        distanceLabel = 1;
+        //    }
+        //    else
+        //    {
+        //        distanceLabel = -1;
+        //    }
+        //    return;
+        //}
+        //else
+        //{
+        //    if (distance >= 0)
+        //    {
+        //        distanceLabel = 2;
+        //    }
+        //    else
+        //    {
+        //        distanceLabel = -2;
+        //    }
+        //    return;
+        //}
+
     }
 
     private void UpdateCurrentState()
@@ -904,5 +914,10 @@ public class DataManagement : MonoBehaviour
     public string GetBoss()
     {
         return boss;
+    }
+
+    public float GetPlayerHP()
+    {
+        return pAnimController.GetCurrentHP();
     }
 }

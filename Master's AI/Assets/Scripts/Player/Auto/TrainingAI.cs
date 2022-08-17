@@ -80,7 +80,7 @@ public class TrainingAI : MonoBehaviour
 
         if (!isScared)
         {
-            if (Mathf.Abs(distanceLabel) == 1)
+            if (Mathf.Abs(distanceLabel) == 0)
             {
                 if (Time.time > (nextActionTime * timeScale))
                 {
@@ -113,25 +113,6 @@ public class TrainingAI : MonoBehaviour
 
     private void CloseDistance()
     {
-        //if(boss.transform.position.x > this.transform.position.x)
-        //{
-        //    if (!pController.GetIsFacingRight())
-        //    {
-        //        pController.AutoFlip();
-        //    }
-
-        //        pController.SetMovementDirection(1);
-        //}
-        //else
-        //{
-        //    if (pController.GetIsFacingRight())
-        //    {
-        //        pController.AutoFlip();
-        //    }
-
-        //    pController.SetMovementDirection(-1);
-        //}
-
         if (pController.GetIsFacingRight())
         {
             pController.SetMovementDirection(1);
@@ -149,17 +130,12 @@ public class TrainingAI : MonoBehaviour
             runOnce = true;
             runAwayStartTime = Time.time;
             isRunningAway = true;
-            
-
-            
         }
-        
-        
     }
 
     private void CheckRunning()
     {
-        if((runAwayStartTime + runAwayDuration) * timeScale < Time.time && isRunningAway)
+        if((runAwayStartTime + runAwayDuration) * timeScale < Time.time *Time.timeScale && isRunningAway)
         {
             pController.SetIsWalking(false);
             isRunningAway = false;

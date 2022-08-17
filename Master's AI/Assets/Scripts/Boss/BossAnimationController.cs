@@ -118,13 +118,18 @@ public class BossAnimationController : MonoBehaviour
     {
         float hp = bController.GetCurrentHealth();
 
-        if (bController.GetIsBlocking() || (ad.damageAmount == 10 && DM.GetBoss() == "Knight"))
+        if (bController.GetIsBlocking() 
+            || (ad.damageAmount == 10 && DM.GetBoss() == "Knight") 
+            || ((ad.damageAmount == 8 || ad.damageAmount == 17) && DM.GetBoss() == "Warlock"))
         {
             damageBlocked = true;
         }
         else
         {
-            hp -= ad.damageAmount;
+            if (DM.GetPlayerHP() > 0) 
+            {
+                hp -= ad.damageAmount;
+            }
         }
 
         bController.SetCurrentHealth(hp);
