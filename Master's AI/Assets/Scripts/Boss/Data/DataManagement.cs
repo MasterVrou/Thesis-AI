@@ -106,7 +106,7 @@ public class DataManagement : MonoBehaviour
         epsilon = 0.1f;
         //epsilonDecay = 0.9998f;
         learningRate = 0.9f;
-        discount = 0.5f;
+        discount = 0.1f;
 
         currentQ = 0;
         newQ = 0;
@@ -158,8 +158,8 @@ public class DataManagement : MonoBehaviour
         CheckGeneration();
         UpdateDistanceLabel();
         UpdateCurrentState();
-        NN_Training();
-        //Q_Training();
+        //NN_Training();
+        Q_Training();
         //LogPrint();
 
         score.text = playerWins.ToString() + " : " + bossWins.ToString();

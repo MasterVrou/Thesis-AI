@@ -443,7 +443,7 @@ public class BossController : ParentController
     public void Respawn()
     {
         currentHealth = maxHealth;
-        transform.position = new Vector2(0, 0);
+        transform.position = new Vector2(-11.26f, -6.91f);
     }
 
     private void Death()

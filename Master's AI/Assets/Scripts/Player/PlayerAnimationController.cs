@@ -158,7 +158,7 @@ public class PlayerAnimationController : MonoBehaviour
     public void Respawn()
     {
         currentHealth = maxHealth;
-        transform.position = new Vector2(-17, 0);
+        transform.position = new Vector2(-20, -5.84f);
     }
 
     
